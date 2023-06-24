@@ -1290,7 +1290,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff7eb5;
+  background: #faffaa;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2141,6 +2141,13 @@ pre .javascript .function {
 #qr p {
   text-align: center;
 }
+.post-copyright {
+  background: var(--card-bg-color);
+  border-left: 3px solid #ff2a2a;
+  list-style: none;
+  margin: 2em 0 0;
+  padding: 0.5em 1em;
+}
 .followme {
   align-items: center;
   background: var(--card-bg-color);
@@ -2963,9 +2970,10 @@ pre {
   border-radius: 3px;
 }
 .header-inner {
-  background: rgba(233,255,233,0.2);
+  background: rgba(233,255,233,0.6);
   padding: 20px;
   border-radius: 3px;
+  opacity: 0.6;
 }
 body {
   background: url("/images/background.png");

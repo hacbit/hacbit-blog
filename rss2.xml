@@ -4,71 +4,30 @@
   xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>hacbit&#39;s blog</title>
-    <link>http://example.com/</link>
+    <link>http://hacbit.tech/</link>
     
-    <atom:link href="http://example.com/rss2.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="http://hacbit.tech/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>The world open itself before those with noble heart.</description>
-    <pubDate>Tue, 20 Jun 2023 17:39:25 GMT</pubDate>
+    <pubDate>Sat, 24 Jun 2023 14:05:34 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
-      <title>pwn 入门指南</title>
-      <link>http://example.com/2023/06/21/pwn-%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/</link>
-      <guid>http://example.com/2023/06/21/pwn-%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/</guid>
+      <title>pwn の学习之路</title>
+      <link>http://hacbit.tech/2023/06/21/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/</link>
+      <guid>http://hacbit.tech/2023/06/21/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/</guid>
       <pubDate>Tue, 20 Jun 2023 17:28:27 GMT</pubDate>
       
-        
-        
-      <description>&lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;&lt;em&gt;pwn&lt;/em&gt; 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。&lt;em&gt;pwn&lt;/em&gt;方向简单来说</description>
-        
+      <description>&lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。&lt;del&gt;（拜托~，pwn掉系统什么的真的超帅的！）&lt;/del&gt;&lt;/p&gt;</description>
       
       
       
-      <content:encoded><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><em>pwn</em> 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。<em>pwn</em>方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），<em>pwn</em>手的乐趣也就这了。<del>（拜托~，pwn掉系统什么的真的超帅的！）</del></p>]]></content:encoded>
-      
-      
-      
-      
-      <comments>http://example.com/2023/06/21/pwn-%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>test-page</title>
-      <link>http://example.com/2023/06/21/test-page/</link>
-      <guid>http://example.com/2023/06/21/test-page/</guid>
-      <pubDate>Tue, 20 Jun 2023 16:40:16 GMT</pubDate>
-      
-      <description>&lt;h1 id=&quot;测试文章&quot;&gt;&lt;a href=&quot;#测试文章&quot; class=&quot;headerlink&quot; title=&quot;测试文章&quot;&gt;&lt;/a&gt;测试文章&lt;/h1&gt;&lt;p&gt;虽然这么说，但是还是写点什么吧。这个网站应该主要会发布一些网安相关文章，以及游戏相关的，倒是应该会分成几个板块的。&lt;/p&gt;</description>
-      
-      
-      
-      <content:encoded><![CDATA[<h1 id="测试文章"><a href="#测试文章" class="headerlink" title="测试文章"></a>测试文章</h1><p>虽然这么说，但是还是写点什么吧。这个网站应该主要会发布一些网安相关文章，以及游戏相关的，倒是应该会分成几个板块的。</p><span id="more"></span><p>接下来就是常用语言的问候啦！（应该没写错吧😓）</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;He110_7h1s_i5_h@cb1t&quot;</span>)</span><br></pre></td></tr></table></figure><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CSharp</span></span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Hello</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params">String[] args</span>)</span> &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;H3llo_thi5_15_hacbit&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* rust */</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Hello_this_is hacbit&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content:encoded>
+      <content:encoded><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。<del>（拜托~，pwn掉系统什么的真的超帅的！）</del></p><span id="more"></span><h1 id="0、也许需要nc一下？！"><a href="#0、也许需要nc一下？！" class="headerlink" title="0、也许需要nc一下？！"></a>0、也许需要nc一下？！</h1><p>要pwn肯定要先连接服务器嘛。一般给了地址和端口可以直接用pwntools的remote连接</p><p>比如给你了 <code>114.514.19.19:810</code></p><p><code>io = remote(&#39;114.514.19.19&#39;, 810)</code></p><p>ps: 本地打就用 <code>io = process(&#39;file_path&#39;)</code></p><p>如果要在kali上就是 <code>$ nc 114.514.19.19 810</code></p><p>当然有时候可能是ssh，telnet之类的</p><p>可以自行上网搜索如何连接。</p><p>这里以ssh为例： 假设用户是ctf 那么就可以用<code>ssh ctf@114.514.19.19 -p 810</code>连接，然后再输入密码（没有给就自己爆吧，甚至可能不给端口2333）</p><p>不过有种偷懒的方法就是直接用xshell连接（download: <a href="https://www.xshell.com/zh/xshell/">XSHELL - NetSarang Website</a>)</p><p>具体用法请自行百度</p><h1 id="1、这是什么？栈？！溢出一下！"><a href="#1、这是什么？栈？！溢出一下！" class="headerlink" title="1、这是什么？栈？！溢出一下！"></a>1、这是什么？栈？！溢出一下！</h1><p>栈溢出是最常见的漏洞，作为pwn的起点当之无愧吧。</p><h2 id="0、栈の基础"><a href="#0、栈の基础" class="headerlink" title="0、栈の基础"></a>0、栈の基础</h2>]]></content:encoded>
       
       
       
       
-      <comments>http://example.com/2023/06/21/test-page/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>Hello World</title>
-      <link>http://example.com/2023/06/20/hello-world/</link>
-      <guid>http://example.com/2023/06/20/hello-world/</guid>
-      <pubDate>Mon, 19 Jun 2023 17:47:21 GMT</pubDate>
-      
-      <description>&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;</description>
-      
-      
-      
-      <content:encoded><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><span id="more"></span><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content:encoded>
-      
-      
-      
-      
-      <comments>http://example.com/2023/06/20/hello-world/#disqus_thread</comments>
+      <comments>http://hacbit.tech/2023/06/21/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/#disqus_thread</comments>
       
     </item>
     
