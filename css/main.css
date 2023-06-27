@@ -1290,7 +1290,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #faffaa;
+  background: #a4df3c;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2933,7 +2933,7 @@ mjx-container + br {
   padding: 20px;
 }
 code {
-  color: #ff7600;
+  color: #c7254e;
   background: #fbf7f8;
   margin: 2px;
 }
@@ -2946,34 +2946,29 @@ pre {
 .highlight,
 code,
 pre {
-  border: 1px solid #d6d6d6;
+  border: 1px solid #f2f2f2;
 }
 .content-wrap {
-  background: rgba(255,255,255,0);
-  opacity: 0.7;
+  opacity: 0.9;
+  padding: 20px;
+  border-radius: 3px;
+rgba(235,255,235,0.8)
 }
 .sidebar {
-  background: rgba(233,255,233,0);
-  padding: 20px;
-  border-radius: 3px;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 .popup {
-  background: rgba(220,232,223,0.6);
+  background: #dce8df;
   padding: 20px;
   border-radius: 3px;
-  opacity: 0.8;
-}
-.main-inner {
-  background: rgba(255,255,255,0);
-  padding: 20px;
-  border-radius: 3px;
+  opacity: 1;
 }
 .header-inner {
-  background: rgba(233,255,233,0.6);
+  background: rgba(233,255,233,0.8);
   padding: 20px;
   border-radius: 3px;
-  opacity: 0.6;
+  opacity: 0.9;
+  z-index: 9999;
 }
 body {
   background: url("/images/background.png");
