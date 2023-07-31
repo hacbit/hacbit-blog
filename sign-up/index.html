@@ -34,19 +34,19 @@
     var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="The world open itself before those with noble heart.">
+  <meta name="description" content="注：本次比赛的赛事群为：759427267，比赛详情加群了解 1. 你会以何种形式参与到比赛？                参赛选手                    解说                         雀魂昵称                             雀魂ID                             段位">
 <meta property="og:type" content="website">
-<meta property="og:title" content="commonweal">
-<meta property="og:url" content="http://hacbit.tech/commonweal/index.html">
+<meta property="og:title" content="2023日麻校赛报名">
+<meta property="og:url" content="http://hacbit.tech/sign-up/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
-<meta property="og:description" content="The world open itself before those with noble heart.">
+<meta property="og:description" content="注：本次比赛的赛事群为：759427267，比赛详情加群了解 1. 你会以何种形式参与到比赛？                参赛选手                    解说                         雀魂昵称                             雀魂ID                             段位">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-06-20T06:45:08.000Z">
-<meta property="article:modified_time" content="2023-06-20T06:45:08.874Z">
+<meta property="article:published_time" content="2023-07-16T15:06:16.805Z">
+<meta property="article:modified_time" content="2023-07-16T15:06:16.805Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://hacbit.tech/commonweal/">
+<link rel="canonical" href="http://hacbit.tech/sign-up/">
 
 
 <script id="page-configurations">
@@ -59,7 +59,7 @@
   };
 </script>
 
-  <title>commonweal | hacbit's blog
+  <title>2023日麻校赛报名 | hacbit's blog
 </title>
   
 
@@ -214,7 +214,7 @@
     <div class="post-block" lang="en">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">commonweal
+<h1 class="post-title" itemprop="name headline">2023日麻校赛报名
 </h1>
 
 <div class="post-meta">
@@ -228,7 +228,107 @@
       
       
       <div class="post-body">
-          
+          <p><strong>注：本次比赛的赛事群为：759427267，比赛详情加群了解</strong></p>
+<p><strong>1. 你会以何种形式参与到比赛？</strong></p>
+<form action="../manager" method="post">
+    <label>
+        <input type="radio" name="content-type" value="participant"> 参赛选手
+    </label>
+    <label>
+        <input type="radio" name="content-type" value="narrator"> 解说
+    </label>
+    <br><br>
+    <div id="participant" style="display: none;">
+        <label for="part-name"> 雀魂昵称 </label>
+        <input type="text" id="part-name" name="part-name" required style="display: block;">
+        <br><br>
+        <label for="part-id"> 雀魂ID </label>
+        <input type="text" id="part-id" name="part-id" required style="display: block;">
+        <br><br>
+        <label for="part-rank"> 段位 </label>
+        <select id="part-rank" name="part-rank">
+           <option value="chuxin"> 初心 </option>
+          <option value="queshi1"> 雀士1 </option>
+          <option value="queshi2"> 雀士2 </option>
+          <option value="queshi3"> 雀士3 </option>
+          <option value="quejie1"> 雀杰1 </option>
+          <option value="quejie2"> 雀杰2 </option>
+          <option value="quejie3"> 雀杰3 </option>
+          <option value="quehao1"> 雀豪1 </option>
+          <option value="quehao2"> 雀豪2 </option>
+          <option value="quehao3"> 雀豪3 </option>
+          <option value="quesheng1"> 雀圣1 </option>
+          <option value="quesheng2"> 雀圣2 </option>
+          <option value="quesheng3"> 雀圣3 </option>
+          <option value="huntian"> 魂天 </option>
+          </select>
+    </div>
+    <div id="narrator" style="display: none;">
+        <label for="narr-name"> 昵称 </label>
+        <input type="text" id="narr-name" name="narr-name" required style="display: block;">
+        <br><br>
+        <label for="contact"> 联系方式(QQ/邮箱) </label>
+        <input type="text" id="contact" name="contact" required style="display: block;">
+    </div>
+    <br><br>
+    <button type="submit" style="margin-top: 20px;"> 提交 </button>
+</form>   
+
+<script>
+    var form = document.getElementById("content-form");	
+    var contentType = document.getElementsByName("content-type");
+    var partSection = document.getElementById("participant");
+    var narrSection = document.getElementById("narrator");
+    contentType[0].addEventListener("click", function() {
+            partSection.style.display = "block";
+            narrSection.style.display = "none";
+            is_part = true;
+            document.getElementById("part-name").required = true;
+            document.getElementById("part-id").required = true;
+            document.getElementById("part-rank").required = true;
+            document.getElementById("narr-name").required = false;
+            document.getElementById("contact").required = false;
+        });
+        contentType[1].addEventListener("click", function() {
+            partSection.style.display = "none";
+            narrSection.style.display = "block";
+            is_part = false;
+            document.getElementById("part-name").required = false;
+            document.getElementById("part-id").required = false;
+            document.getElementById("part-rank").required = false;
+            document.getElementById("narr-name").required = true;
+            document.getElementById("contact").required = true;
+        });
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        var data = {};
+        if (is_part) {
+            data["type"] = "participant";
+            data["name"] = document.getElementById("part-name").value;
+            data["id"] = document.getElementById("part-id").value;
+            data["rank"] = document.getElementById("part-rank").value;
+        } else {
+            data["type"] = "narrator";
+            data["name"] = document.getElementById("narr-name").value;
+            data["contact"] = document.getElementById("contact").value;
+        }
+        var json = JSON.stringify(data);
+        alert(json);
+        var input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", "data");
+        input.setAttribute("value", json);
+        form.appendChild(input);
+        form.submit();
+    });
+</script>
+
+
+
+
+
+
+
       </div>
       
       
