@@ -34,12 +34,12 @@
     var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="概述pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
+  <meta name="description" content="概述长期更新中…… pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pwn の学习之路">
 <meta property="og:url" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
-<meta property="og:description" content="概述pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
+<meta property="og:description" content="概述长期更新中…… pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E6%A0%88%E5%B8%A7.png">
@@ -52,7 +52,7 @@
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_rdi.png">
 <meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_ret.png">
 <meta property="article:published_time" content="2023-06-20T17:28:27.000Z">
-<meta property="article:modified_time" content="2023-07-31T08:09:31.954Z">
+<meta property="article:modified_time" content="2023-08-01T23:13:33.439Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
@@ -238,6 +238,10 @@
 
         <div class="post-meta">
           
+            <i class="fa fa-thumb-tack"></i>
+            <font color=7D26CD>Top</font>
+            <span class="post-meta-divider">|</span>
+          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
@@ -251,7 +255,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-07-31 16:09:31" itemprop="dateModified" datetime="2023-07-31T16:09:31+08:00">2023-07-31</time>
+                <time title="Modified: 2023-08-02 07:13:33" itemprop="dateModified" datetime="2023-08-02T07:13:33+08:00">2023-08-02</time>
               </span>
 
           
@@ -267,14 +271,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.2k</span>
+              <span>5.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>9 mins.</span>
+              <span>10 mins.</span>
             </span>
 
         </div>
@@ -286,7 +290,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。<del>（拜托~，pwn掉系统什么的真的超帅的！）</del></p>
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><em><strong>长期更新中……</strong></em></p>
+<p>pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。<del>（拜托~，pwn掉系统什么的真的超帅的！）</del></p>
 <span id="more"></span>
 
 <h1 id="也许需要nc一下？！"><a href="#也许需要nc一下？！" class="headerlink" title="也许需要nc一下？！"></a>也许需要nc一下？！</h1><p>要pwn肯定要先连接服务器嘛。一般给了地址和端口可以直接用pwntools的remote连接</p>
@@ -331,15 +336,15 @@
 <p>从这个意义上，<strong>我们可以把堆栈看成一个寄存，交换临时数据的内存区</strong>。</p>
 <h2 id="pwntools基础"><a href="#pwntools基础" class="headerlink" title="pwntools基础"></a>pwntools基础</h2><h3 id="安装pwntools"><a href="#安装pwntools" class="headerlink" title="安装pwntools"></a>安装pwntools</h3><p>使用python自带的pip下载pwntools</p>
 <p><code>$ pip install pwntools</code></p>
-<p>如果在windows上的wsl上直接使用改语句可能会报错</p>
+<p>如果在windows上的wsl上直接使用该语句可能会报错</p>
 <p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/pip-error.png" alt="pip_err"></p>
 <p>不过好在给了你提示，只要在后面加上<code>--break-system-packages</code>即可</p>
 <p>也就是：<code>$ pip install pwntools --break-system-packages</code></p>
 <h3 id="pwntools使用"><a href="#pwntools使用" class="headerlink" title="pwntools使用"></a>pwntools使用</h3><h4 id="基本框架"><a href="#基本框架" class="headerlink" title="基本框架"></a>基本框架</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *	<span class="comment"># 导入pwntools模块</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span>	<span class="comment"># x64架构应为 &#x27;amd64&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span>	<span class="comment"># 设置为目标机的系统，一般是linux</span></span><br><span class="line">context.log_level = <span class="string">&#x27;deubg&#x27;</span>	<span class="comment"># 输出调试信息</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">或者直接使用:</span></span><br><span class="line"><span class="string">context(arch=&#x27;amd64&#x27;, os=&#x27;linux&#x27;, log_level=&#x27;debug&#x27;)</span></span><br><span class="line"><span class="string">当然一般情况下arch和os不用设置（要生成shellcode时候要设置），只要设置log_level为debug就可以了</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span>	<span class="comment"># x64架构应为 &#x27;amd64&#x27;</span></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span>	<span class="comment"># 设置为目标机的系统，一般是linux</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span>	<span class="comment"># 输出调试信息</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">或者直接使用:</span></span><br><span class="line"><span class="string">context(arch=&#x27;amd64&#x27;, os=&#x27;linux&#x27;, log_level=&#x27;debug&#x27;)</span></span><br><span class="line"><span class="string">当然一般情况下arch和os不用设置（要生成shellcode时候要设置），只要设置log_level为debug就可以了</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">io = remote(<span class="string">&#x27;114.514.19.198&#x27;</span>, <span class="number">23333</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">用来建立一个远程连接，url或者ip作为地址，然后指明端口</span></span><br><span class="line"><span class="string">也可以仅使用本地文件，方便调试:</span></span><br><span class="line"><span class="string">io = process(&#x27;./test_pwn_file&#x27;)</span></span><br><span class="line"><span class="string">process用来启动一个本地进程，需要注意.elf不能在windows下运行，应在wsl或者虚拟机里，否则程序会报错，.exe等亦然，所以本地打的话记得脚本在匹配的环境里执行</span></span><br><span class="line"><span class="string">process里是文件路径，其中 &#x27;test_pwn_file&#x27; 是文件名</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">io = remote(<span class="string">&#x27;114.514.19.198&#x27;</span>, <span class="number">23333</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">用来建立一个远程连接，url或者ip作为地址，然后指明端口</span></span><br><span class="line"><span class="string">也可以仅使用本地文件，方便调试:</span></span><br><span class="line"><span class="string">io = process(&#x27;./test_pwn_file&#x27;)</span></span><br><span class="line"><span class="string">process用来启动一个本地进程，需要注意.elf不能在windows下运行，应在wsl或者虚拟机里，否则程序会报错，.exe等亦然，所以本地打的话记得脚本在匹配的环境里执行</span></span><br><span class="line"><span class="string">process里是文件路径，其中 &#x27;test_pwn_file&#x27; 是文件名，可以是相对地址，也可以是绝对地址，当然还是建议把exp（攻击利用脚本）和pwn文件（你要打的东西）放到同目录下</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">asm(shellcraft.sh())</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">asm()接收一个字符串，返回汇编码的机器码(bytes)</span></span><br><span class="line"><span class="string">比如:</span></span><br><span class="line"><span class="string"><span class="meta">&gt;&gt;&gt; </span>asm(&#x27;mov eax, 0x10&#x27;)</span></span><br><span class="line"><span class="string">b&#x27;\xb8\x10\x00\x00\x00&#x27;</span></span><br><span class="line"><span class="string">shellcraft模块是shellcode的模块，包含一些生成shellcode的函数</span></span><br><span class="line"><span class="string">这里shellcraft.sh()就是执行/bin/sh的shellcode</span></span><br><span class="line"><span class="string"><span class="meta">&gt;&gt;&gt; </span>asm(shellcraft.sh())</span></span><br><span class="line"><span class="string">b&#x27;jhh///sh/bin\x89\xe3h\x01\x01\x01\x01\x814$ri\x01\x011\xc9Qj\x04Y\x01\xe1Q\x89\xe11\xd2j\x0bX\xcd\x80&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 
@@ -352,8 +357,8 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">io.recv()</span><br><span class="line"><span class="comment"># 接收所有数据，返回接收到的数据</span></span><br><span class="line"><span class="comment"># 可以接收一个int参数，表示接收多少个字节</span></span><br><span class="line"><span class="comment"># recv(6) 就表示接收6个字节</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">比如你收到了一段消息: b&#x27;hello,world!&#x27;</span></span><br><span class="line"><span class="string">recv(6) 就会返回 b&#x27;hello,&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">io.recvuntil(message)</span><br><span class="line"><span class="comment"># 接收到message后停止接收，返回包含message在内的全部数据</span></span><br><span class="line"><span class="comment"># 可以指定一个drop: bool参数，默认为False，若为True则只返回message之前的数据(message被抛弃了)</span></span><br><span class="line"><span class="comment"># 当然如果你继续接收数据的话是不会重新接收一遍message了，只会从message之后继续接收</span></span><br><span class="line">io.recvline()</span><br><span class="line"><span class="comment"># 接收一行数据并返回，等价于 recvuntil(b&#x27;\n&#x27;)</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>上述发送和接收的方法均能接受<code>str</code>或<code>bytes</code>类型的参数</strong></p>
-<h4 id="数据打包"><a href="#数据打包" class="headerlink" title="数据打包"></a>数据打包</h4><p>pwntools里封装了pack和unpack函数</p>
-<p>一般用对应的简称：</p>
+<h4 id="数据打包"><a href="#数据打包" class="headerlink" title="数据打包"></a>数据打包</h4><p>pwntools里可以用pack和unpack函数把int打包为bytes，或者把bytes解包为int</p>
+<p>一般直接用封装好的p16&#x2F;p32&#x2F;p64, u16&#x2F;u32&#x2F;u64（好像用vs会警告吧，我自己用显示没在pwntools找到这玩意，反正能跑脚本就行）</p>
 <p>打包 <code>p16/p32/p64</code>: 把一个整数分别打包为16，32或64位</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>p64(<span class="number">0x7ffff3283296</span>)</span><br><span class="line"><span class="string">b&#x27;\x962(\xf3\xff\x7f\x00\x00&#x27;</span></span><br><span class="line"><span class="comment"># 即 b&#x27;\x96\x32\x28\xf3\xff\x7f\x00\x00&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>p16(<span class="number">0x256</span>)</span><br><span class="line"><span class="string">b&#x27;V\x20&#x27;</span></span><br><span class="line"><span class="comment"># 即 b&#x27;\x56\x02&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>p32(<span class="number">0x8004082</span>)</span><br><span class="line"><span class="string">b&#x27;\x82@\x00\x08</span></span><br><span class="line"><span class="string"># 即 b&#x27;</span>\x82\x40\x00\x08<span class="string">&#x27;</span></span><br></pre></td></tr></table></figure>
 
@@ -594,7 +599,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -935,7 +940,7 @@ if(canvas.getContext){
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">10 mins.</span>
+    <span title="Reading time total">11 mins.</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -943,7 +948,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 6.2k words</span>
+  <span class="post-count">The blog has a total of 6.4k words</span>
 </div>
 
 
