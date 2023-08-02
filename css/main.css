@@ -1290,7 +1290,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #1336b5;
+  background: #ff4283;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1436,10 +1436,9 @@ pre .javascript .function {
   line-height: 1.8;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .post-toc .nav .nav-child {
-  display: none;
+  display: block;
 }
 .post-toc .nav .active > .nav-child {
   display: block;
@@ -1862,12 +1861,12 @@ pre .javascript .function {
 }
 @media (min-width: 992px) {
   .post-body {
-    text-align: justify;
+    text-align: justify-all;
   }
 }
 @media (max-width: 991px) {
   .post-body {
-    text-align: justify;
+    text-align: justify-all;
   }
 }
 .post-body h1,
@@ -2930,7 +2929,7 @@ mjx-container + br {
 .post {
   margin-top: 60px;
   margin-bottom: 60px;
-  padding: 20px;
+  padding: 10px;
 }
 code {
   color: #c7254e;
@@ -2947,10 +2946,11 @@ pre {
 code,
 pre {
   border: 1px solid #f2f2f2;
+  tab-size: 4;
 }
 .content-wrap {
   opacity: 0.9;
-  padding: 20px;
+  padding: 35px;
   border-radius: 3px;
 rgba(235,255,235,0.8)
 }
