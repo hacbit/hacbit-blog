@@ -34,15 +34,15 @@
     var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="总览：  基本leak fork子进程爆破 打TLS  1、基本leak由于canary是以\x00结尾（正好截断字符），所以如果把\x00覆盖掉，就可以实现leak canary。">
+  <meta name="description" content="总览：  基本leak fork子进程爆破 打TLS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Canary常见绕过思路">
 <meta property="og:url" content="http://hacbit.tech/Canary%E5%B8%B8%E8%A7%81%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
-<meta property="og:description" content="总览：  基本leak fork子进程爆破 打TLS  1、基本leak由于canary是以\x00结尾（正好截断字符），所以如果把\x00覆盖掉，就可以实现leak canary。">
+<meta property="og:description" content="总览：  基本leak fork子进程爆破 打TLS">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-08-01T01:48:41.000Z">
-<meta property="article:modified_time" content="2023-08-01T09:50:00.928Z">
+<meta property="article:modified_time" content="2023-08-06T10:45:46.112Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
@@ -232,10 +232,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-08-01 09:48:41 / Modified: 17:50:00" itemprop="dateCreated datePublished" datetime="2023-08-01T09:48:41+08:00">2023-08-01</time>
+              <time title="Created: 2023-08-01 09:48:41" itemprop="dateCreated datePublished" datetime="2023-08-01T09:48:41+08:00">2023-08-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-08-06 18:45:46" itemprop="dateModified" datetime="2023-08-06T18:45:46+08:00">2023-08-06</time>
+              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -275,6 +281,8 @@
 <li>fork子进程爆破</li>
 <li>打TLS</li>
 </ul>
+<span id="more"></span>
+
 <h1 id="1、基本leak"><a href="#1、基本leak" class="headerlink" title="1、基本leak"></a>1、基本leak</h1><p>由于canary是以\x00结尾（正好截断字符），所以如果把\x00覆盖掉，就可以实现leak canary。</p>
 
     </div>
