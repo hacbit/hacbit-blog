@@ -44,6 +44,7 @@
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813192419049.png">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813193450003.png">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813194208176.png">
+<meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813204100990.png">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/%E9%99%8C%E7%94%9F%E7%9A%84%E7%BA%B8%E6%9D%A1.jpg">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/%E9%BE%99%E8%AF%AD.jpeg">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/luna_alphabet.jpg">
@@ -52,8 +53,9 @@
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813200653505.png">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/yOkXWSJT.png">
 <meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813202732539.png">
+<meta property="og:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813203835458.png">
 <meta property="article:published_time" content="2023-08-13T11:21:42.000Z">
-<meta property="article:modified_time" content="2023-08-13T12:35:43.941Z">
+<meta property="article:modified_time" content="2023-08-13T12:43:49.778Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://hacbit.tech/NepCTF2023-WP/image-20230813192419049.png">
@@ -246,7 +248,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2023-08-13 19:21:42 / Modified: 20:35:43" itemprop="dateCreated datePublished" datetime="2023-08-13T19:21:42+08:00">2023-08-13</time>
+              <time title="Created: 2023-08-13 19:21:42 / Modified: 20:43:49" itemprop="dateCreated datePublished" datetime="2023-08-13T19:21:42+08:00">2023-08-13</time>
             </span>
 
           
@@ -262,7 +264,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
+              <span>1.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -302,9 +304,12 @@
 
 <p><img src="/NepCTF2023-WP/image-20230813194208176.png" alt="huffman_decompressed"></p>
 <p>虽然还是有点问题，不过已经不妨碍得到结果了（）</p>
+<p>NepCTF{huffman_zip_666}</p>
 <h1 id="misc-ConnectedFive"><a href="#misc-ConnectedFive" class="headerlink" title="misc-ConnectedFive"></a>misc-ConnectedFive</h1><p>万宁五子棋，不好评价（</p>
 <p>直接玩过去就好了（）</p>
+<p>（不想再玩一次了，就不放截图了吧，42次也太多了）</p>
 <h1 id="misc-CheckIn"><a href="#misc-CheckIn" class="headerlink" title="misc-CheckIn"></a>misc-CheckIn</h1><p>签到，题目给了flag</p>
+<p><img src="/NepCTF2023-WP/image-20230813204100990.png" alt="checkin"></p>
 <h1 id="misc-陌生的语言"><a href="#misc-陌生的语言" class="headerlink" title="misc-陌生的语言"></a>misc-陌生的语言</h1><p>得到一个图片：</p>
 <img src="/NepCTF2023-WP/%E9%99%8C%E7%94%9F%E7%9A%84%E7%BA%B8%E6%9D%A1.jpg" alt="陌生的纸条" style="zoom: 25%;">
 
@@ -314,11 +319,14 @@
 <img src="/NepCTF2023-WP/luna_alphabet.jpg" alt="luna_alphabet" style="zoom: 67%;">
 
 <p>分别得到了nepnep a believing，和heart is your magic</p>
-<p>提示flag格式凭语法断句，所以flag是: NepCTF{NEPNEP_A_BELIEVING_HEART_IS_YOUR_MAGIC}</p>
+<p>提示flag格式凭语法断句，然后大小写都试一下，得到flag是:</p>
+<p>NepCTF{NEPNEP_A_BELIEVING_HEART_IS_YOUR_MAGIC}</p>
 <h1 id="misc-小叮弹钢琴"><a href="#misc-小叮弹钢琴" class="headerlink" title="misc-小叮弹钢琴"></a>misc-小叮弹钢琴</h1><p>得到一个piano.mid文件，听了一会，发现可能有摩斯密码</p>
 <p>用Audacity打开：</p>
-<p><img src="/NepCTF2023-WP/image-20230813195608858.png" alt="mose"></p>
-<p><img src="/NepCTF2023-WP/image-20230813195622754.png" alt="xor_data"></p>
+<img src="/NepCTF2023-WP/image-20230813195608858.png" alt="mose" style="zoom:80%;">
+
+<img src="/NepCTF2023-WP/image-20230813195622754.png" alt="xor_data" style="zoom:80%;">
+
 <p>发现一半是摩斯，另一半可以侧过来看是一个很大的16进制数，读出来结果如下：</p>
 <p>-.–&#x2F;—&#x2F;..-&#x2F;…&#x2F;….&#x2F;—&#x2F;..-&#x2F;.-..&#x2F;-..&#x2F;..-&#x2F;…&#x2F;.&#x2F;-&#x2F;….&#x2F;..&#x2F;…&#x2F;-&#x2F;—&#x2F;-..-&#x2F;—&#x2F;.-.&#x2F;…&#x2F;—&#x2F;–&#x2F;.&#x2F;-&#x2F;….&#x2F;..&#x2F;-.&#x2F;–.</p>
 <p>0x370a05303c290e045005031c2b1858473a5f052117032c39230f005d1e17</p>
@@ -347,16 +355,17 @@
 <p>得到的明文拿去解base16，然后再解base64得到</p>
 <p><a target="_blank" rel="noopener" href="https://img1.imgtp.com/2023/07/24/yOkXWSJT.png">https://img1.imgtp.com/2023/07/24/yOkXWSJT.png</a></p>
 <p>把图片下载下来：</p>
-<img src="/NepCTF2023-WP/yOkXWSJT.png" alt="yOkXWSJT" style="zoom:80%;">
+<img src="/NepCTF2023-WP/yOkXWSJT.png" alt="yOkXWSJT" style="zoom: 30%;">
 
 <p>又是一个奇怪的语言，想到本题背景是星穹铁道，所以去找了一下星铁的文字，发现图片里的应该是宇宙通用文</p>
-<p>去wiki找到了码表:<br><img src="/NepCTF2023-WP/image-20230813202732539.png" alt="宇宙通用文"></p>
+<p>去wiki找到了码表:<br><img src="/NepCTF2023-WP/image-20230813202732539.png" alt="宇宙通用文" style="zoom: 67%;"></p>
 <p>对照得到flag：</p>
 <p>NepCTF{HRP_aIways_likes_March_7th}</p>
 <h1 id="pwn-HRP-CHAT-3"><a href="#pwn-HRP-CHAT-3" class="headerlink" title="pwn-HRP-CHAT-3"></a>pwn-HRP-CHAT-3</h1><p>获取途径是进入Start，然后打败boss。</p>
 <p>由于只能攻击一次，所以找一个攻击最高的（H3h3QAQ），保证能秒掉boss。</p>
 <p>Shop里没有，只能抽卡（RollCard）</p>
 <p>出来后直接去打Start就行，输入的下标在源码里找分别对应Characters和skill这两个数组的下标，所以注意自己的H3h3QAQ是哪个下标就行了</p>
+<p><img src="/NepCTF2023-WP/image-20230813203835458.png" alt="image-20230813203835458"></p>
 
     </div>
 
