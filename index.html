@@ -230,10 +230,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-02-23 21:15:03 / Modified: 22:59:08" itemprop="dateCreated datePublished" datetime="2024-02-23T21:15:03+08:00">2024-02-23</time>
+              <time title="Created: 2024-02-23 21:15:03" itemprop="dateCreated datePublished" datetime="2024-02-23T21:15:03+08:00">2024-02-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-02-24 01:21:57" itemprop="dateModified" datetime="2024-02-24T01:21:57+08:00">2024-02-24</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -241,7 +247,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>167</span>
+              <span>798</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -262,15 +268,15 @@
       
           <h1 id="IDA-Python入门（todo）"><a href="#IDA-Python入门（todo）" class="headerlink" title="IDA Python入门（todo）"></a>IDA Python入门（todo）</h1><p>ida pro7.7已经基本普及了，所以本篇文章是基于ida pro77和python3环境编写。</p>
 <p>不可否认的是ida pro在静态分析上极为强大，不过动调方面还是比起其他工具稍显不足，而idapython提供了大量的ida的api，能一定程度上缓解动调的缺陷，这里就给大家简单介绍一下（</p>
-<p><img src="/idapython%E5%85%A5%E9%97%A8/image-20240223213616667.png" alt="image-20240223213616667"></p>
-<p><img src="/idapython%E5%85%A5%E9%97%A8/image-20240223221902702.png" alt="image-20240223221902702"></p>
-<p><strong>指令相关：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> idaapi <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> ida_dbg <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> ida_bytes <span class="keyword">import</span> *</span><br><span class="line"><span class="comment"># 返回目标地址指向的指令的前一条指令的地址</span></span><br><span class="line"><span class="comment"># 参数一是查找的开始地址，参数二是往前查找的最小地址（在范围内）</span></span><br><span class="line">prev_1 = prev_head(<span class="number">0x00007FF6A1AA2577</span>, <span class="number">1</span>)</span><br><span class="line">prev_2 = prev_head(<span class="number">0x00007FF6A1AA257a</span>, <span class="number">0x00007FF6A1AA2578</span>)	<span class="comment"># fail</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(prev_1), <span class="built_in">hex</span>(prev_2))</span><br><span class="line">&gt;&gt; <span class="number">0x7ff6a1aa2573</span> <span class="number">0xffffffffffffffff</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 返回目标地址指向的指令的后一条指令的地址</span></span><br><span class="line"><span class="comment"># 参数一是查找开始地址，参数二是往后查找的最大地址（不在范围内）</span></span><br><span class="line">next_1 = next_head(<span class="number">0x00007FF6A1AA257a</span>, <span class="number">1</span>)	<span class="comment"># fail</span></span><br><span class="line">next_2 = next_head(<span class="number">0x00007FF6A1AA257a</span>, <span class="number">0x00007FF6A1AA2580</span>)</span><br><span class="line">&gt;&gt; <span class="number">0xffffffffffffffff</span> <span class="number">0x7ff6a1aa257b</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出目标地址的反汇编语句（就是有一点点乱码x）</span></span><br><span class="line">a = generate_disasm_line(<span class="number">0x00007FF6A1AA2585</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">&gt;&gt; <span class="string">b&#x27;\x01\x05movzx\x02\x05   \x01)\x01!eax\x02!\x02)\x01\t,\x02\t \x01*\x01 byte ptr\x02  \x01\t[\x02\t\x01!r10\x02!\x01\t]\x02\t\x02*&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标地址指令</span></span><br><span class="line">a = print_insn_mnem(<span class="number">0x00007FF6A1AA2585</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">&gt;&gt; movzx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标地址的某个操作数（按索引取）</span></span><br><span class="line">a = print_operand(<span class="number">0x00007FF6A1AA2585</span>, <span class="number">0</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">&gt;&gt; <span class="string">b&#x27;\x01)\x01!eax\x02!\x02)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标地址某个操作数的值（按索引取）</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(get_operand_value(<span class="number">0x00007FF6A1AA2577</span>, <span class="number">1</span>)))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(get_operand_value(<span class="number">0x00007FF6A1AA2577</span>, <span class="number">1</span>)))</span><br><span class="line">&gt;&gt; <span class="number">0x10</span></span><br><span class="line">&gt;&gt; &lt;<span class="keyword">class</span> <span class="string">&#x27;int&#x27;</span>&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取目标地址字符串，参数二是长度，参数三是string的类型</span></span><br><span class="line">a = get_strlit_contents(<span class="number">0x00007FF6A1AC28A8</span>, <span class="number">4</span>, <span class="number">0</span>)</span><br><span class="line">b = get_strlit_contents(<span class="number">0x00007FF6A1AC28A8</span>, <span class="number">4</span>, <span class="number">1</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line"><span class="built_in">print</span>(b)</span><br><span class="line">&gt;&gt; <span class="string">b&#x27;Erro&#x27;</span></span><br><span class="line">&gt;&gt; <span class="string">b&#x27;\xe7\x89\x85\xe6\xbd\xb2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在目标地址添加注释，参数三为True则不会替换comment</span></span><br><span class="line">a = set_cmt(<span class="number">0x00007FF6A1AA2577</span>, <span class="string">&quot;this is a comment&quot;</span>, <span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">&gt;&gt; <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 给目标地址的变量改名</span></span><br><span class="line">a = set_name(<span class="number">0x00007FF6A1AC28A8</span>, <span class="string">&quot;err&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">&gt;&gt; <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取当前光标处地址</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(get_screen_ea()))</span><br><span class="line">&gt;&gt; <span class="number">0x7ff6a1ac28a8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 统计目标地址所在函数有多少个基本块</span></span><br><span class="line"><span class="built_in">print</span>(FlowChart(get_func(<span class="number">0x00007FF6A1AA21B0</span>)).size)</span><br><span class="line">&gt;&gt; <span class="number">149</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>功能相关：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置断点</span></span><br><span class="line">add_bpt(<span class="number">0x00007FF6A1AA2577</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除断点</span></span><br><span class="line">del_bpt(<span class="number">0x00007FF6A1AA2577</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置断点是否开启</span></span><br><span class="line">enable_bpt(<span class="number">0x00007FF6A1AA2577</span>, <span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-
-
+<p><em><strong>PS：参考了Q神的 <a target="_blank" rel="noopener" href="http://www.qfrost.com/posts/ctf/idapython">http://www.qfrost.com/posts/ctf/idapython</a> ，并且修正为了新版ida python的api</strong></em></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/idapython%E5%85%A5%E9%97%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1422,13 +1428,13 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">30k</span>
+    <span title="Symbols count total">31k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">55 mins.</span>
+    <span title="Reading time total">56 mins.</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -1436,7 +1442,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 27.9k words</span>
+  <span class="post-count">The blog has a total of 28.9k words</span>
 </div>
 
 
