@@ -42,7 +42,7 @@
 <meta property="og:description" content="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）注：本文默认你已经有一定的Rust基础 rust的宏的强大相信大家肯定听的不少，本篇就简单说说rust的过程宏 rust的宏有好几种，有基于模式匹配的，还有可以直接对语法树动手的，过程宏就是可以修改语法树，可以在编译器派生代码：比如有个test crate，然后它依赖于test_macro crate，而后者是一个proc-macr">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-04-17T00:29:14.000Z">
-<meta property="article:modified_time" content="2024-04-17T04:26:01.646Z">
+<meta property="article:modified_time" content="2024-04-17T04:37:52.932Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
@@ -234,7 +234,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2024-04-17 08:29:14 / Modified: 12:26:01" itemprop="dateCreated datePublished" datetime="2024-04-17T08:29:14+08:00">2024-04-17</time>
+              <time title="Created: 2024-04-17 08:29:14 / Modified: 12:37:52" itemprop="dateCreated datePublished" datetime="2024-04-17T08:29:14+08:00">2024-04-17</time>
             </span>
 
           
@@ -273,6 +273,8 @@
 <p>rust的宏的强大相信大家肯定听的不少，本篇就简单说说rust的过程宏</p>
 <p>rust的宏有好几种，有基于模式匹配的，还有可以直接对语法树动手的，过程宏就是可以修改语法树，可以在编译器派生代码：比如有个test crate，然后它依赖于test_macro crate，而后者是一个proc-macro库，也就是里面定义了过程宏，编译时就会先编译test_macro然后用test_macro的对test的语法解析流修改再丢给编译器，所以可以实现很多非常抽象的操作。</p>
 <p>写本文的契机是，前段时间在Rust中文社区群里看到有人问能不能用宏把json生成一个enum（json只有一层），这个需求和过程宏还是很契合的，所以就简单实现了一下，以下内容就是对实现的讲解</p>
+<span id="more"></span>
+
 <p>首先开个crate吧</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo new json_to_enum</span><br></pre></td></tr></table></figure>
 
