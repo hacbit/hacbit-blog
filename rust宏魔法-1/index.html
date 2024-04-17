@@ -34,30 +34,32 @@
     var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="The world open itself before those with noble heart.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="hacbit&#39;s blog">
-<meta property="og:url" content="http://hacbit.tech/index.html">
+  <meta name="description" content="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）注：本文默认你已经有一定的Rust基础 rust的宏的强大相信大家肯定听的不少，本篇就简单说说rust的过程宏 rust的宏有好几种，有基于模式匹配的，还有可以直接对语法树动手的，过程宏就是可以修改语法树，可以在编译器派生代码：比如有个test crate，然后它依赖于test_macro crate，而后者是一个proc-macr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rust宏魔法(1)">
+<meta property="og:url" content="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-1/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
-<meta property="og:description" content="The world open itself before those with noble heart.">
+<meta property="og:description" content="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）注：本文默认你已经有一定的Rust基础 rust的宏的强大相信大家肯定听的不少，本篇就简单说说rust的过程宏 rust的宏有好几种，有基于模式匹配的，还有可以直接对语法树动手的，过程宏就是可以修改语法树，可以在编译器派生代码：比如有个test crate，然后它依赖于test_macro crate，而后者是一个proc-macr">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-04-17T00:29:14.000Z">
+<meta property="article:modified_time" content="2024-04-17T04:26:01.646Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://hacbit.tech/">
+<link rel="canonical" href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-1/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>hacbit's blog</title>
+  <title>rust宏魔法(1) | hacbit's blog</title>
   
 
 
@@ -200,9 +202,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -218,10 +221,9 @@
       <meta itemprop="name" content="hacbit's blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/rust%E5%AE%8F%E9%AD%94%E6%B3%95-1/" class="post-title-link" itemprop="url">rust宏魔法(1)</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          rust宏魔法(1)
+        </h1>
 
         <div class="post-meta">
           
@@ -235,7 +237,14 @@
               <time title="Created: 2024-04-17 08:29:14 / Modified: 12:26:01" itemprop="dateCreated datePublished" datetime="2024-04-17T08:29:14+08:00">2024-04-17</time>
             </span>
 
-          <br>
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
             <span class="post-meta-item" title="Symbols count in article">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -260,7 +269,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）"><a href="#Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）" class="headerlink" title="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）"></a>Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）</h1><p><em><strong>注：本文默认你已经有一定的Rust基础</strong></em></p>
+        <h1 id="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）"><a href="#Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）" class="headerlink" title="Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）"></a>Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）</h1><p><em><strong>注：本文默认你已经有一定的Rust基础</strong></em></p>
 <p>rust的宏的强大相信大家肯定听的不少，本篇就简单说说rust的过程宏</p>
 <p>rust的宏有好几种，有基于模式匹配的，还有可以直接对语法树动手的，过程宏就是可以修改语法树，可以在编译器派生代码：比如有个test crate，然后它依赖于test_macro crate，而后者是一个proc-macro库，也就是里面定义了过程宏，编译时就会先编译test_macro然后用test_macro的对test的语法解析流修改再丢给编译器，所以可以实现很多非常抽象的操作。</p>
 <p>写本文的契机是，前段时间在Rust中文社区群里看到有人问能不能用宏把json生成一个enum（json只有一层），这个需求和过程宏还是很契合的，所以就简单实现了一下，以下内容就是对实现的讲解</p>
@@ -333,7 +342,6 @@
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![feature(prelude_import)]</span></span><br><span class="line"><span class="meta">#[prelude_import]</span></span><br><span class="line"><span class="keyword">use</span> std::prelude::rust_2021::*;</span><br><span class="line"><span class="meta">#[macro_use]</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> std;</span><br><span class="line"><span class="keyword">use</span> parser_macro::json_to_enum;</span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">enum</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    AppNameAlreadyExists,</span><br><span class="line">    AppNameInvalid,</span><br><span class="line">    AppNameNotSet,</span><br><span class="line">    AppNameTooLong,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">std</span>::fmt::Display <span class="keyword">for</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fmt</span>(&amp;<span class="keyword">self</span>, f: &amp;<span class="keyword">mut</span> std::fmt::Formatter) <span class="punctuation">-&gt;</span> std::fmt::<span class="type">Result</span> &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            Test::AppNameAlreadyExists =&gt; &#123;</span><br><span class="line">                f.<span class="title function_ invoke__">write_fmt</span>(</span><br><span class="line">                    <span class="built_in">format_args!</span>(</span><br><span class="line">                        <span class="string">&quot;&#123;0&#125;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;\&quot;\u&#123;5e94&#125;\u&#123;7528&#125;\u&#123;540d&#125;\u&#123;79f0&#125;\u&#123;5df2&#125;\u&#123;5b58&#125;\u&#123;5728&#125;\&quot;&quot;</span>,</span><br><span class="line">                    ),</span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">            Test::AppNameInvalid =&gt; &#123;</span><br><span class="line">                f.<span class="title function_ invoke__">write_fmt</span>(</span><br><span class="line">                    <span class="built_in">format_args!</span>(</span><br><span class="line">                        <span class="string">&quot;&#123;0&#125;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;\&quot;\u&#123;5e94&#125;\u&#123;7528&#125;\u&#123;540d&#125;\u&#123;79f0&#125;\u&#123;65e0&#125;\u&#123;6548&#125;\&quot;&quot;</span>,</span><br><span class="line">                    ),</span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">            Test::AppNameNotSet =&gt; &#123;</span><br><span class="line">                f.<span class="title function_ invoke__">write_fmt</span>(</span><br><span class="line">                    <span class="built_in">format_args!</span>(</span><br><span class="line">                        <span class="string">&quot;&#123;0&#125;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;\&quot;\u&#123;5e94&#125;\u&#123;7528&#125;\u&#123;540d&#125;\u&#123;79f0&#125;\u&#123;672a&#125;\u&#123;8bbe&#125;\u&#123;7f6e&#125;\&quot;&quot;</span>,</span><br><span class="line">                    ),</span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">            Test::AppNameTooLong =&gt; &#123;</span><br><span class="line">                f.<span class="title function_ invoke__">write_fmt</span>(</span><br><span class="line">                    <span class="built_in">format_args!</span>(</span><br><span class="line">                        <span class="string">&quot;&#123;0&#125;&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;\&quot;\u&#123;5e94&#125;\u&#123;7528&#125;\u&#123;540d&#125;\u&#123;79f0&#125;\u&#123;8fc7&#125;\u&#123;957f&#125;\&quot;&quot;</span>,</span><br><span class="line">                    ),</span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">std</span>::fmt::<span class="built_in">Debug</span> <span class="keyword">for</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fmt</span>(&amp;<span class="keyword">self</span>, f: &amp;<span class="keyword">mut</span> std::fmt::Formatter) <span class="punctuation">-&gt;</span> std::fmt::<span class="type">Result</span> &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            Test::AppNameAlreadyExists =&gt; &#123;</span><br><span class="line">                f.<span class="title function_ invoke__">write_fmt</span>(<span class="built_in">format_args!</span>(<span class="string">&quot;&#123;0&#125;&quot;</span>, <span class="string">&quot;AppNameAlreadyExists&quot;</span>))</span><br><span class="line">            &#125;</span><br><span class="line">            Test::AppNameInvalid =&gt; f.<span class="title function_ invoke__">write_fmt</span>(<span class="built_in">format_args!</span>(<span class="string">&quot;&#123;0&#125;&quot;</span>, <span class="string">&quot;AppNameInvalid&quot;</span>)),</span><br><span class="line">            Test::AppNameNotSet =&gt; f.<span class="title function_ invoke__">write_fmt</span>(<span class="built_in">format_args!</span>(<span class="string">&quot;&#123;0&#125;&quot;</span>, <span class="string">&quot;AppNameNotSet&quot;</span>)),</span><br><span class="line">            Test::AppNameTooLong =&gt; f.<span class="title function_ invoke__">write_fmt</span>(<span class="built_in">format_args!</span>(<span class="string">&quot;&#123;0&#125;&quot;</span>, <span class="string">&quot;AppNameTooLong&quot;</span>)),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = Test::AppNameNotSet;</span><br><span class="line">    <span class="title function_ invoke__">match</span> (&amp;a.<span class="title function_ invoke__">to_string</span>(), &amp;<span class="string">&quot;应用名称未设置&quot;</span>) &#123;</span><br><span class="line">        (left_val, right_val) =&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> !(*left_val == *right_val) &#123;</span><br><span class="line">                <span class="keyword">let</span> <span class="variable">kind</span> = ::core::panicking::AssertKind::<span class="built_in">Eq</span>;</span><br><span class="line">                ::core::panicking::<span class="title function_ invoke__">assert_failed</span>(</span><br><span class="line">                    kind,</span><br><span class="line">                    &amp;*left_val,</span><br><span class="line">                    &amp;*right_val,</span><br><span class="line">                    ::core::option::<span class="type">Option</span>::<span class="literal">None</span>,</span><br><span class="line">                );</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-      
     </div>
 
     
@@ -341,838 +349,61 @@
     
 
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/idapython%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/idapython%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">idapython入门</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2024-02-23 21:15:03" itemprop="dateCreated datePublished" datetime="2024-02-23T21:15:03+08:00">2024-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-02-24 01:21:57" itemprop="dateModified" datetime="2024-02-24T01:21:57+08:00">2024-02-24</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>798</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="IDA-Python入门（todo）"><a href="#IDA-Python入门（todo）" class="headerlink" title="IDA Python入门（todo）"></a>IDA Python入门（todo）</h1><p>ida pro7.7已经基本普及了，所以本篇文章是基于ida pro77和python3环境编写。</p>
-<p>不可否认的是ida pro在静态分析上极为强大，不过动调方面还是比起其他工具稍显不足，而idapython提供了大量的ida的api，能一定程度上缓解动调的缺陷，这里就给大家简单介绍一下（</p>
-<p><em><strong>PS：参考了Q神的 <a target="_blank" rel="noopener" href="http://www.qfrost.com/posts/ctf/idapython">http://www.qfrost.com/posts/ctf/idapython</a> ，并且修正为了新版ida python的api</strong></em></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/idapython%E5%85%A5%E9%97%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/Rust-QuickStart/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Rust-QuickStart/" class="post-title-link" itemprop="url">Rust-QuickStart</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-11-26 13:47:08" itemprop="dateCreated datePublished" datetime="2023-11-26T13:47:08+08:00">2023-11-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-08 01:55:48" itemprop="dateModified" datetime="2023-12-08T01:55:48+08:00">2023-12-08</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>13k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>24 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><em><strong>Include:</strong></em></p>
-<ul>
-<li><p><em><strong>This book?</strong></em></p>
-</li>
-<li><p><em><strong>Before Start</strong></em></p>
-</li>
-<li><p><em><strong>Quick Start with a small Game</strong></em></p>
-</li>
-<li><p><em><strong>Improve your Rust code (TODO)</strong></em></p>
-</li>
-<li><p><em><strong>Others (TODO)</strong></em></p>
-</li>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>hacbit
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-1/" title="rust宏魔法(1)">http://hacbit.tech/rust宏魔法-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
 </ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Rust-QuickStart/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
+</div>
+
         
-      
-    </div>
 
-    
-    
-    
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
 
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+    <div class="social-list">
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">Shellcode编写入门</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-09-14 14:29:38" itemprop="dateCreated datePublished" datetime="2023-09-14T14:29:38+08:00">2023-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-10-01 23:54:31" itemprop="dateModified" datetime="2023-10-01T23:54:31+08:00">2023-10-01</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
             </span>
 
+            <span class="label">RSS</span>
+          </a>
         </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Shellcode编写入门"><a href="#Shellcode编写入门" class="headerlink" title="Shellcode编写入门"></a>Shellcode编写入门</h1><h2 id="为什么要手写shellcode？"><a href="#为什么要手写shellcode？" class="headerlink" title="为什么要手写shellcode？"></a>为什么要手写shellcode？</h2><p>现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
     </div>
+  </div>
 
-    
-    
-    
 
-    
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/idapython%E5%85%A5%E9%97%A8/" rel="prev" title="idapython入门">
+      <i class="fa fa-chevron-left"></i> idapython入门
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/RISC-V%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/RISC-V%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">RISC-V入门</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-09-03 11:19:51" itemprop="dateCreated datePublished" datetime="2023-09-03T11:19:51+08:00">2023-09-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-09-20 19:05:14" itemprop="dateModified" datetime="2023-09-20T19:05:14+08:00">2023-09-20</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>先写点简单的，后面看情况补充……</strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/RISC-V%E5%85%A5%E9%97%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/2023-8%E4%B8%8B%E5%8D%8A%E6%9C%88%E6%AF%94%E8%B5%9Bwp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023-8%E4%B8%8B%E5%8D%8A%E6%9C%88%E6%AF%94%E8%B5%9Bwp/" class="post-title-link" itemprop="url">2023-8下半月比赛wp</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-08-28 09:00:21" itemprop="dateCreated datePublished" datetime="2023-08-28T09:00:21+08:00">2023-08-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-09-01 11:20:01" itemprop="dateModified" datetime="2023-09-01T11:20:01+08:00">2023-09-01</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.4k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>6 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ul>
-<li><em>NSSCTF-2nd（pwn方向全部，re两道）</em></li>
-<li>WMCTF（待补充）</li>
-<li><em>SEKAICTF（re一道）</em></li>
-<li><em>也许还有……</em></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023-8%E4%B8%8B%E5%8D%8A%E6%9C%88%E6%AF%94%E8%B5%9Bwp/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/NepCTF2023-WP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/NepCTF2023-WP/" class="post-title-link" itemprop="url">NepCTF2023_WP</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-08-13 19:21:42 / Modified: 20:43:49" itemprop="dateCreated datePublished" datetime="2023-08-13T19:21:42+08:00">2023-08-13</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.9k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>比赛详情：misc(7&#x2F;9), pwn(1&#x2F;9)</strong></p>
-<p><del>已经从二进制手变成misc手了，悲</del></p>
-<p><img src="/NepCTF2023-WP/image-20230813192419049.png" alt="排名"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/NepCTF2023-WP/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/Canary%E5%B8%B8%E8%A7%81%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Canary%E5%B8%B8%E8%A7%81%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF/" class="post-title-link" itemprop="url">Canary常见绕过思路</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-08-01 09:48:41" itemprop="dateCreated datePublished" datetime="2023-08-01T09:48:41+08:00">2023-08-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-08-06 18:45:46" itemprop="dateModified" datetime="2023-08-06T18:45:46+08:00">2023-08-06</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>84</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><em><strong>总览：</strong></em></p>
-<ul>
-<li>基本leak</li>
-<li>fork子进程爆破</li>
-<li>打TLS</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Canary%E5%B8%B8%E8%A7%81%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/NSSround14wp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/NSSround14wp/" class="post-title-link" itemprop="url">NSSround14wp</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-07-31 09:33:17 / Modified: 10:22:50" itemprop="dateCreated datePublished" datetime="2023-07-31T09:33:17+08:00">2023-07-31</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>473</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本次round14只打了一题，（没报零真是太好了），赛后在@摸鱼の猫 师傅的指点下又解决了一题</p>
-<img src="/NSSround14wp/nssround14.png" alt="round14" style="zoom:50%;">
-
-<p><strong>也许是目录</strong></p>
-<ul>
-<li>love</li>
-<li>xor</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/NSSround14wp/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/pwn%E6%96%B0%E6%89%8B%E6%9D%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/" class="post-title-link" itemprop="url">pwn新手村</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-06-21 01:28:27" itemprop="dateCreated datePublished" datetime="2023-06-21T01:28:27+08:00">2023-06-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-10-01 23:54:20" itemprop="dateModified" datetime="2023-10-01T23:54:20+08:00">2023-10-01</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>7.7k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>14 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><em><strong>长期更新中……</strong></em></p>
-<p>既然选择这条注定艰难的路，那么话不多说，直接开始吧！<del>（拜托~，pwn掉系统什么的真的超帅的！）</del></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/pwn%E6%96%B0%E6%89%8B%E6%9D%91/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -1225,6 +456,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rust%E5%AE%8F%E9%AD%94%E6%B3%95%E2%80%94%E2%80%94%E7%AC%AC%E4%B8%80%E8%BE%91%EF%BC%88%E4%B8%8D%E7%9F%A5%E9%81%93%E5%90%8E%E9%9D%A2%E8%BF%98%E4%BC%9A%E4%B8%8D%E4%BC%9A%E6%9B%B4%E6%96%B0%EF%BC%8C%E6%80%BB%E4%B9%8B%E8%BF%99%E6%98%AF%E4%B8%AA%E7%B3%BB%E5%88%97%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Rust宏魔法——第一辑（不知道后面还会不会更新，总之这是个系列）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E4%BD%A0%E7%9A%84proc-macro"><span class="nav-number">1.1.</span> <span class="nav-text">开始编写你的proc-macro</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
