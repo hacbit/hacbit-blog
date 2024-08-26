@@ -211,6 +211,101 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="hacbit">
+      <meta itemprop="description" content="The world open itself before those with noble heart.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hacbit's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/" class="post-title-link" itemprop="url">rust宏魔法-2</a>
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-08-26 22:31:29 / Modified: 23:26:31" itemprop="dateCreated datePublished" datetime="2024-08-26T22:31:29+08:00">2024-08-26</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>732</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Rust宏魔法——第二辑（"><a href="#Rust宏魔法——第二辑（" class="headerlink" title="Rust宏魔法——第二辑（"></a>Rust宏魔法——第二辑（</h1><blockquote>
+<p>  又来整点奇技淫巧了</p>
+</blockquote>
+<p>这期就玩玩用声明宏来生成宏（</p>
+<p>总结可以直接看 👉 <a href="#%E7%9C%81%E6%B5%81">省流</a></p>
+<p>假设有以下的奇怪情景：</p>
+<blockquote>
+<p>  你整了一个日志系统，但是其中的输出内容是预设好的（当然也应该预留一个比如 Other 的来自定义内容）</p>
+<p>  然后你想要给每一种输出内容都注册一个宏，并且有些输出是带有 “{}” 的，因此你希望能够有类似下面这个效果：</p>
+  <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app_start_failed!(e)</span><br><span class="line"><span class="comment">// App start failed due to the error : &#123;e&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>  也就是像 <code>println!</code> 之类的宏能够接受不定数量的参数，具体看格式（也就是你预设字符串里面有几个 “{}” )</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1026,98 +1121,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/NSSround14wp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="hacbit">
-      <meta itemprop="description" content="The world open itself before those with noble heart.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hacbit's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/NSSround14wp/" class="post-title-link" itemprop="url">NSSround14wp</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2023-07-31 09:33:17 / Modified: 10:22:50" itemprop="dateCreated datePublished" datetime="2023-07-31T09:33:17+08:00">2023-07-31</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>473</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本次round14只打了一题，（没报零真是太好了），赛后在@摸鱼の猫 师傅的指点下又解决了一题</p>
-<img src="/NSSround14wp/nssround14.png" alt="round14" style="zoom:50%;">
-
-<p><strong>也许是目录</strong></p>
-<ul>
-<li>love</li>
-<li>xor</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/NSSround14wp/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -1184,7 +1192,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1497,13 +1505,13 @@ if(canvas.getContext){
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">34k</span>
+    <span title="Symbols count total">35k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">1:01</span>
+    <span title="Reading time total">1:03</span>
 </div>
   <div class="powered-by">
     <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
@@ -1511,7 +1519,7 @@ if(canvas.getContext){
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">The blog has a total of 31.5k words</span>
+  <span class="post-count">The blog has a total of 32.4k words</span>
 </div>
 
 

