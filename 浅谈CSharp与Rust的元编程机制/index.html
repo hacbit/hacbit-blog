@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+
+<script>
+  (function() {
+    if ('') {
+      var password = window.prompt('INPUT PASSWORD');
+      if (password !== '') {
+        alert('WRONG PASSWORD');
+        history.back();
+      }
+    }
+  })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="大部分的语言或多或少提供了一些元编程机制，使得开发者能够对现有的语法语义进行拓展，能够极大的提高编程体验和开发效率。可能一提到元编程，大家很容易想到大名鼎鼎的 Lisp 语言（你可能会说：“难道不是 Cpp？”，我又不会模板元编程，你让我讲啥 x）。得益于其本身接近语法树的语法，使得 Lisp 开发者可以很容易操作语法节点，甚至实现 “自己的 Lisp”，于是就才涌现了很多的 Lisp 方言。当然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈CSharp与Rust的元编程机制">
+<meta property="og:url" content="http://hacbit.tech/%E6%B5%85%E8%B0%88CSharp%E4%B8%8ERust%E7%9A%84%E5%85%83%E7%BC%96%E7%A8%8B%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="hacbit&#39;s blog">
+<meta property="og:description" content="大部分的语言或多或少提供了一些元编程机制，使得开发者能够对现有的语法语义进行拓展，能够极大的提高编程体验和开发效率。可能一提到元编程，大家很容易想到大名鼎鼎的 Lisp 语言（你可能会说：“难道不是 Cpp？”，我又不会模板元编程，你让我讲啥 x）。得益于其本身接近语法树的语法，使得 Lisp 开发者可以很容易操作语法节点，甚至实现 “自己的 Lisp”，于是就才涌现了很多的 Lisp 方言。当然">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-03-05T15:33:16.000Z">
+<meta property="article:modified_time" content="2025-03-06T06:47:14.106Z">
+<meta property="article:author" content="hacbit">
+<meta property="article:tag" content="Rust">
+<meta property="article:tag" content="CSharp">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://hacbit.tech/%E6%B5%85%E8%B0%88CSharp%E4%B8%8ERust%E7%9A%84%E5%85%83%E7%BC%96%E7%A8%8B%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>浅谈CSharp与Rust的元编程机制 | hacbit's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  
+<link rel="alternate" href="/rss2.xml" title="hacbit's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/hacbit" class="github-corner" aria-label="View source on GitHub"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hacbit's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-friends-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>friends links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hacbit" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/%E6%B5%85%E8%B0%88CSharp%E4%B8%8ERust%E7%9A%84%E5%85%83%E7%BC%96%E7%A8%8B%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="hacbit">
+      <meta itemprop="description" content="The world open itself before those with noble heart.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hacbit's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅谈CSharp与Rust的元编程机制
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-03-05 23:33:16" itemprop="dateCreated datePublished" datetime="2025-03-05T23:33:16+08:00">2025-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-03-06 14:47:14" itemprop="dateModified" datetime="2025-03-06T14:47:14+08:00">2025-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>大部分的语言或多或少提供了一些元编程机制，使得开发者能够对现有的语法语义进行拓展，能够极大的提高编程体验和开发效率。可能一提到元编程，大家很容易想到大名鼎鼎的 <code>Lisp</code> 语言（你可能会说：“难道不是 Cpp？”，我又不会模板元编程，你让我讲啥 x）。得益于其本身接近语法树的语法，使得 Lisp 开发者可以很容易操作语法节点，甚至实现 “自己的 Lisp”，于是就才涌现了很多的 Lisp 方言。当然，本篇文章并不是为了讨论 Lisp，只是想要就 “元编程” 这一个角度，来谈谈 C# 和 Rust 语言各自的机制。</p>
+<blockquote>
+<p>  关于<strong>元编程</strong>是什么，简单来说是用<strong>程序编写程序</strong></p>
+<p>  更详细的描述建议参考 wiki ： <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%BC%96%E7%A8%8B">https://zh.wikipedia.org/wiki/%E5%85%83%E7%BC%96%E7%A8%8B</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="元编程概述"><a href="#元编程概述" class="headerlink" title="元编程概述"></a>元编程概述</h2><p>元编程一般有两种实现方式：一是通过使用内部暴露的 API 来直接处理语法节点，二是能够动态执行字符串表达式。</p>
+<p>对于后者来说，典型的是 Python 的 <code>eval</code>  和 <code>exec</code> 函数，JS 中也有类似的功能。对于这类实现来说，固然十分方便，但是也会带来很严重的安全问题。如果对于外部用户来说，<code>eval</code> 这类的危险函数的输入是可控的，那么用户就可以传入一段精心构造的字符串来执行恶意命令导致可能的信息泄露、提权等安全问题。</p>
+<p>所以我个人会更倾向于前者（虽然这往往意味着更加抽象的语法和更高的编写难度），比如 C# 和 Rust 便是如此。</p>
+<p>在 C# 中，Roslyn 编译器提供了一系列 API （<code>Microsoft.CodeAnalysis.CSharp</code>）用于编写源生成器，源生成器会在编译时被调用，访问每个语法节点，然后根据你的实现去动态的生成代码给编译器（如果不开 emit，那么这些代码不会以实际的源文件形式出现在你的文件夹中）；而 Rust 则是提供了极其强大，堪比 Lisp 的宏系统。普通的函数宏会依据用户编写的规则去在编译期展开，过程宏则有点接近 C#，不过 Rust 并不提供直接遍历全局的语法节点，而只是限制在该宏的使用者本身。</p>
+<h2 id="一些简单实践"><a href="#一些简单实践" class="headerlink" title="一些简单实践"></a>一些简单实践</h2><p>以下是关于 C# 和 Rust 元编程的简单实践，可以观察一下他们之间的差异。</p>
+<blockquote>
+<p>  以下代码并非是为了教学，只是从一些简单的示例来比较他们之间的差异性，以及讨论各自的优劣。</p>
+<p>  关于代码的解释，会在后面一起分析</p>
+</blockquote>
+<h3 id="C-增量生成器（IncrementalGenerator）实践"><a href="#C-增量生成器（IncrementalGenerator）实践" class="headerlink" title="C# 增量生成器（IncrementalGenerator）实践"></a>C# 增量生成器（IncrementalGenerator）实践</h3><blockquote>
+<p>  由于 C# 的<strong>源生成器</strong>每次都要遍历所有语法节点，十分影响性能，微软已经将其标记为<strong>弃用</strong>，取而代之的是新的增量生成器 API</p>
+<p>  <strong>增量生成器</strong>中提供了多种管道进行分析，比如 <code>CompilationProvider</code> , <code>SyntaxProvider</code>, <code>AdditionalTextsProvider</code> 等等。相比于旧的 <code>ISourceGenerator</code> ，可以提供更细粒度的分析，接受的分析对象也不局限于源代码。</p>
+</blockquote>
+<p>首先需要新建一个 C# 库项目，我推荐目标框架是 netstandard2.0，使用的 <code>Microsoft.CodeAnalysis.CSharp</code> 版本为 <code>4.3.0</code> （这可以保证该源生成器能在大部分的项目中使用，甚至 Unity）</p>
+<p>简单写一个小 demo：</p>
+<p>对于该生成器，需要实现 <code>IIncrementalGenerator</code>  接口的 <code>Initialize</code> 方法。然后我们从语法节点的角度切入，比如我们需要给具有 <code>[Test]</code> Attribute 的 class 分部实现一个方法，那么就可以像下面这样。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.Text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Test.Analysis</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Generator(LanguageNames.CSharp)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">TestGenerator</span> : <span class="title">IIncrementalGenerator</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">IncrementalGeneratorInitializationContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> provider = context.SyntaxProvider</span><br><span class="line">                .CreateSyntaxProvider(</span><br><span class="line">                    (s, _) =&gt; s <span class="keyword">is</span> ClassDeclarationSyntax classDecl &amp;&amp; </span><br><span class="line">                        classDecl.AttributeLists</span><br><span class="line">                            .SelectMany(al =&gt; al.Attributes)</span><br><span class="line">                            .Any(a =&gt; a.Name.ToString() == <span class="string">&quot;Test&quot;</span>),</span><br><span class="line">                    (ctx, _) =&gt; ctx.Node <span class="keyword">as</span> ClassDeclarationSyntax</span><br><span class="line">                ).Collect();</span><br><span class="line"></span><br><span class="line">            context.RegisterSourceOutput(provider, (spc, source) =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">foreach</span> (<span class="keyword">var</span> @class <span class="keyword">in</span> source)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">var</span> namespaceName = @class.FirstAncestorOrSelf&lt;NamespaceDeclarationSyntax&gt;().Name.ToString();</span><br><span class="line">                    <span class="comment">// Add Test method to the class</span></span><br><span class="line">                    <span class="keyword">var</span> code = <span class="string">$@&quot;// &lt;auto-generated/&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">using System;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">namespace <span class="subst">&#123;namespaceName&#125;</span></span></span><br><span class="line"><span class="string">&#123;&#123;</span></span><br><span class="line"><span class="string">    public partial class <span class="subst">&#123;@<span class="keyword">class</span>.Identifier&#125;</span></span></span><br><span class="line"><span class="string">    &#123;&#123;</span></span><br><span class="line"><span class="string">        public void Test() =&gt; Console.WriteLine(&quot;&quot;Test&quot;&quot;);</span></span><br><span class="line"><span class="string">    &#125;&#125;</span></span><br><span class="line"><span class="string">&#125;&#125;&quot;</span>;</span><br><span class="line">                    spc.AddSource(<span class="string">$&quot;<span class="subst">&#123;@<span class="keyword">class</span>.Identifier&#125;</span>_Test.g.cs&quot;</span>, SourceText.From(code, Encoding.UTF8));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外在一个终端项目中引用该项目，我们需要定义一个 TestAttribute，然后在一个分部类上使用它，然后这个类就会自动实现 Test() 方法了。</p>
+<blockquote>
+<p>  说明:information_source: ： 由于测试项目使用的是 net9.0， 支持顶级表达式，所以可以不需要写静态 Main 函数。</p>
+</blockquote>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">new</span> Test.TestClass();</span><br><span class="line">test.Test();</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Test</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">TestClass</span> &#123; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestAttribute</span> : <span class="title">Attribute</span> &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行一下就会发现正确输出了 <code>&quot;Test&quot;</code></p>
+<h3 id="C-诊断分析器（DiagnosticAnalyzer）实践"><a href="#C-诊断分析器（DiagnosticAnalyzer）实践" class="headerlink" title="C# 诊断分析器（DiagnosticAnalyzer）实践"></a>C# 诊断分析器（DiagnosticAnalyzer）实践</h3><p>比如我希望 <code>[Test]</code> 所在的 class 是密封的，那么我可以创建一个诊断器来分析，当不是 sealed 时抛出一个错误。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> <span class="keyword">warning</span> disable RS2008</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> System.Collections.Immutable;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.CSharp;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.CSharp.Syntax;</span><br><span class="line"><span class="keyword">using</span> Microsoft.CodeAnalysis.Diagnostics;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Test.Analysis</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">DiagnosticAnalyzer(LanguageNames.CSharp)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">TestAnalyzer</span> : <span class="title">DiagnosticAnalyzer</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">override</span> ImmutableArray&lt;DiagnosticDescriptor&gt; SupportedDiagnostics =&gt; ImmutableArray.Create(Rule);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> DiagnosticDescriptor Rule = <span class="keyword">new</span> DiagnosticDescriptor(</span><br><span class="line">            id: <span class="string">&quot;TEST001&quot;</span>,</span><br><span class="line">            title: <span class="string">&quot;Test class must be sealed&quot;</span>,</span><br><span class="line">            messageFormat: <span class="string">&quot;class &#x27;&#123;0&#125;&#x27; must be sealed&quot;</span>,</span><br><span class="line">            category: <span class="string">&quot;Test&quot;</span>,</span><br><span class="line">            defaultSeverity: DiagnosticSeverity.Error,</span><br><span class="line">            isEnabledByDefault: <span class="literal">true</span>,</span><br><span class="line">            description: <span class="string">&quot;Test class must be sealed.&quot;</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">AnalysisContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);</span><br><span class="line">            context.EnableConcurrentExecution();</span><br><span class="line">            context.RegisterSyntaxNodeAction(AnalyzeSyntax, SyntaxKind.ClassDeclaration);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AnalyzeSyntax</span>(<span class="params">SyntaxNodeAnalysisContext context</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (context.Node <span class="keyword">is</span> <span class="keyword">not</span> ClassDeclarationSyntax classDecl) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> hasTestAttribute = classDecl.AttributeLists</span><br><span class="line">                .SelectMany(al =&gt; al.Attributes)</span><br><span class="line">                .Any(a =&gt; a.Name.ToString() == <span class="string">&quot;Test&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (hasTestAttribute == <span class="literal">false</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> isSealed = classDecl.Modifiers.Any(m =&gt; m.IsKind(SyntaxKind.SealedKeyword));</span><br><span class="line">            <span class="keyword">if</span> (isSealed == <span class="literal">false</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                context.ReportDiagnostic(Diagnostic.Create(SupportedDiagnostics[<span class="number">0</span>], classDecl.GetLocation(), classDecl.Identifier.Text));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后回到测试项目尝试 build，就可以看到有条报错：<code>error TEST001: class &#39;TestClass&#39; must be sealed</code></p>
+<h3 id="Rust-函数宏（声明宏）实践"><a href="#Rust-函数宏（声明宏）实践" class="headerlink" title="Rust 函数宏（声明宏）实践"></a>Rust 函数宏（声明宏）实践</h3><blockquote>
+<p>  我使用的是新的宏声明方式，旧的方式是使用 <code>macro_rules!</code> 进行声明</p>
+<p>  <code>#![feature(decl_macro)]</code> 需要使用 Rust 的 nightly 或 beta 版本 :warning:</p>
+</blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![feature(decl_macro)]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    macros::hello!(world);</span><br><span class="line">    macros::muti_hello!(world, rust, <span class="keyword">macro</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> macros &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">macro</span> <span class="title function_ invoke__">hello</span>($n:ident) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;Hello, &#123;&#125;!&quot;</span>, <span class="built_in">stringify!</span>($n));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">macro</span> <span class="title function_ invoke__">muti_hello</span>($( $n:ident ),*$(,)?) &#123;</span><br><span class="line">        $(</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;Hello, &#123;&#125;!&quot;</span>, <span class="built_in">stringify!</span>($n));</span><br><span class="line">        )*</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行一下观察输出：</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Hello,</span> world!</span><br><span class="line"><span class="built_in">Hello,</span> world!</span><br><span class="line"><span class="built_in">Hello,</span> rust!</span><br><span class="line"><span class="built_in">Hello,</span> macro!</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Rust-过程宏（proc-macro）实践"><a href="#Rust-过程宏（proc-macro）实践" class="headerlink" title="Rust 过程宏（proc-macro）实践"></a>Rust 过程宏（proc-macro）实践</h3><p>Rust 写过程宏类似于 C# 的增量生成器或诊断器，也是需要新建一个 Rust 项目，在新的过程宏项目中添加 quote, syn 依赖，然后简单写一个 Hello 特征的 derive</p>
+<blockquote>
+<p>  Rust trait （特征） 可以类比于其他语言的 interface（接口）</p>
+</blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> proc_macro;</span><br><span class="line"><span class="keyword">use</span> proc_macro::TokenStream;</span><br><span class="line"><span class="keyword">use</span> quote::quote;</span><br><span class="line"><span class="keyword">use</span> syn::&#123;parse::Parse, parse_macro_input, DeriveInput, Token&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[proc_macro_derive(Hello)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">hello_derive</span>(input: TokenStream) <span class="punctuation">-&gt;</span> TokenStream &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">input</span> = parse_macro_input!(input <span class="keyword">as</span> DeriveInput);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">name</span> = &amp;input.ident;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">expanded</span> = quote! &#123;</span><br><span class="line">        <span class="keyword">impl</span> <span class="title class_">Hello</span> <span class="keyword">for</span> #name &#123;</span><br><span class="line">            <span class="keyword">fn</span> <span class="title function_">hello</span>() &#123;</span><br><span class="line">                <span class="built_in">println!</span>(<span class="string">&quot;Hello, &#123;&#125;!&quot;</span>, <span class="built_in">stringify!</span>(#name));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    expanded.<span class="title function_ invoke__">into</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SingleHelloInput</span> &#123;</span><br><span class="line">    from: syn::Ident,</span><br><span class="line">    to: syn::Ident,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">HelloInput</span> &#123;</span><br><span class="line">    some_hellos: <span class="type">Vec</span>&lt;SingleHelloInput&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Parse</span> <span class="keyword">for</span> <span class="title class_">HelloInput</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">parse</span>(input: syn::parse::ParseStream) <span class="punctuation">-&gt;</span> syn::<span class="type">Result</span>&lt;<span class="keyword">Self</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">some_hellos</span> = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">        <span class="keyword">while</span> !input.<span class="title function_ invoke__">is_empty</span>() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">from</span> = input.<span class="title function_ invoke__">parse</span>()?;</span><br><span class="line">            input.parse::&lt;Token![=&gt;]&gt;()</span><br><span class="line">                .<span class="title function_ invoke__">map_err</span>(|e| syn::Error::<span class="title function_ invoke__">new</span>(e.<span class="title function_ invoke__">span</span>(), <span class="string">&quot;Expected `=&gt;`&quot;</span>))?;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">to</span> = input.<span class="title function_ invoke__">parse</span>()?;</span><br><span class="line">            some_hellos.<span class="title function_ invoke__">push</span>(SingleHelloInput &#123; from, to &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(HelloInput &#123; some_hellos &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[proc_macro]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">say_hello</span>(input: TokenStream) <span class="punctuation">-&gt;</span> TokenStream &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">input</span> = parse_macro_input!(input <span class="keyword">as</span> HelloInput);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">hellos</span> = input.some_hellos.<span class="title function_ invoke__">iter</span>().<span class="title function_ invoke__">map</span>(|SingleHelloInput &#123; from, to &#125;| &#123;</span><br><span class="line">        quote! &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;say hello from &#123;&#125; to &#123;&#125;!&quot;</span>, <span class="built_in">stringify!</span>(#from), <span class="built_in">stringify!</span>(#to));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">expanded</span> = quote! &#123;</span><br><span class="line">        #(#hellos)*</span><br><span class="line">    &#125;;</span><br><span class="line">    expanded.<span class="title function_ invoke__">into</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把该项目添加到另一个项目的依赖，并测试宏的功能：</p>
+<blockquote>
+<p>  <code>hello_derive</code> 宏的功能是给目标实现 <code>Hello</code> 特征（当然，这得你自己定义），于是可以调用 <code>World::hello()</code> 方法</p>
+<p>  注意:warning: ：此处不是静态方法，Rust 并不能直接在 struct 中定义静态方法（实际上也没有这个概念x），此处是由于 World 结构体没有任何成员，所以创建 World 实例可以直接简化成 <code>World</code> ，而不需要 <code>World &#123; &#125;</code></p>
+<p>  <code>say_hello</code> 宏则是可以接受任意多组输入，每一组的格式必须是 <code>标识符 =&gt; 标识符</code> ，该宏的解析是自定义的。</p>
+</blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> test_macro::&#123;Hello, say_hello&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    World::<span class="title function_ invoke__">hello</span>();</span><br><span class="line">    say_hello!(World =&gt; Rust);</span><br><span class="line">    say_hello! &#123;</span><br><span class="line">        Hacbit =&gt; Rust</span><br><span class="line">        Rust =&gt; Hacbit     My =&gt; ABAB</span><br><span class="line">            My =&gt; Anii</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Hello)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">World</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Hello</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">hello</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Hello, World!</span><br><span class="line"><span class="built_in">say</span> hello <span class="keyword">from</span> World <span class="keyword">to</span> Rust!</span><br><span class="line"><span class="built_in">say</span> hello <span class="keyword">from</span> Hacbit <span class="keyword">to</span> Rust!</span><br><span class="line"><span class="built_in">say</span> hello <span class="keyword">from</span> Rust <span class="keyword">to</span> Hacbit!</span><br><span class="line"><span class="built_in">say</span> hello <span class="keyword">from</span> My <span class="keyword">to</span> ABAB!</span><br><span class="line"><span class="built_in">say</span> hello <span class="keyword">from</span> My <span class="keyword">to</span> Anii!</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="C-和Rust在元编程实现上的异同"><a href="#C-和Rust在元编程实现上的异同" class="headerlink" title="C#和Rust在元编程实现上的异同"></a>C#和Rust在元编程实现上的异同</h2><p>看了上面的几个示例，应该对两者的元编程机制有了一定的印象。</p>
+<p>对于 C# 和 Rust 的相同的地方（虽然上面的例子可能没有很好的体现）：</p>
+<ul>
+<li>都是把源代码解析成 AST （抽象语法树），然后分析节点对象</li>
+<li>需要额外引入库项目作为类似编译器插件的东西，以此实现在编译期对原有代码的功能进行拓展</li>
+</ul>
+<p>不过差异也十分显著：</p>
+<ul>
+<li>C# 提供多个管道（比如 <code>context.SyntaxProvider</code>）来访问各种节点（比如 <code>ClassDeclarationSyntax</code>）对象，生成器可以自定义筛选条件，并分析筛选出来的节点来生成相关拓展； Rust 则需要用户显示的去 “使用” 宏，比如 <code>#[derive(Hello)]</code> 就是直接指定了宏的使用目标，因而无需筛选。所以实际上，<strong>C# 在获取元信息的范围更广，Rust 只能获取目标的元信息，而无法得知目标以外的元信息。</strong></li>
+<li>但是另一方面，<strong>受限于 C# 本身的语法，C# 无法提供更细粒度的指令流分析</strong>。而 Rust 在这方面就十分灵活，可以自定义 Token 流解析器，你可以把各种符号（允许的 Token）塞进的宏规则中，而无需在意语法（就像上面的 <code>say_hello!</code> 那样）。这意味着，<strong>在 Rust 中你可以定义自己语法。</strong></li>
+</ul>
+<p>无论是 C# 的生成器&#x2F;分析器，还是 Rust 的宏，其实核心区别无非就是作用范围的不同，一个是全局，一个是局部。而由这两点分歧，又很容易想到，C# 的元编程机制只能进行<strong>增量</strong>，是不能够修改原有代码的（因为生成器&#x2F;分析器是并行的，而元信息作为共享资源，自然不能随意修改）；Rust 的宏作用范围只有局部，每个宏之间是独立（或者包含），而不会产生交叉，因而可以<strong>随意修改原有逻辑</strong>。</p>
+<p>不管具体实现如何，毫无疑问他们都是具有相当程度可定制化的，并且也能保证运行时性能和安全性。不同于反射、或者运行时动态执行字符串等运行时特性，他们本质上是<strong>将一部分运行时逻辑提前到编译期</strong>，因而减少运行时的性能损耗（当然，这也意味着你需要付出更长编译时间的代价 :laughing: ），也就是 Rust 中特别提倡的<strong>零成本抽象</strong>。同时，由于这些编译期特性只会在编译期产生作用，就不会有运行时特性那样潜在的注入漏洞等安全风险。（除非黑客能够控制你的编译管线 x :laughing: ）</p>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>有什么比较合适的使用场景呢？</p>
+<p>按照我的经验可能往往是用来动态实现一些接口，函数之类的。不过这个应该更容易在 Rust 中实现（也十分自然），因为 Rust 的 <code>struct</code> 可以在任何地方去实现新功能，只需要定义一个新的 <code>trait</code> （如果是在该 <code>struct</code> 定义所在的模块之外）。而放在 C# 就有点麻烦，通常我们不得不需要强制用户使用 <code>partial</code> 关键字，并且也无法对一些内置的（或第三方库中的）类型进行更大限度的拓展，比如我们不能给 <code>int</code> 添加新的接口实现。</p>
+<p>生成一些桥接代码可能是不错的选择，比如我们想要在 c 端和 s 端交换数据，那么肯定需要对两端的数据结构进行一个适配，这时候就可以根据配置动态生成；或者是想要和其他语言走 FFI，那么也可以通过元编程机制生成相关代码（比如 pyo3 项目对 Rust 和 Python 的 FFI 通信的处理）。</p>
+<p>不过 C# 的诊断器确实是个很有意思的东西，天然适合写框架。毕竟可以全局检查你的代码，并且添加各种约束，以减少使用框架时的未定义行为，所以如果去翻各种第三方库，他们大多都会写一些 Analyzer 。Rust 的确做不了这块，原因如前文所述，Rust 不提供能够直接访问全局语法树的 API，不过 Rust 本身也有 rust-analyzer ，还可以配合 cargo-clippy，因此对于代码本身的检查也很严格就是了（）</p>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>要我说的话，肯定是 Rust 的机制写的更爽（），毕竟可以自定义语法欸，超帅的吧！</p>
+<p>Rust 独立开发的话，随便写点宏自娱自乐其实挺有趣的，之前也写过一些<del>奇奇怪怪的</del>功能，比如使用宏加载 json 文件自动生成 enum。（C# 当然也很容易实现）</p>
+<p>由于我是 Rust 出身，代码风格极大程度受到了 Rust 设计哲学的影响，在使用 C# 的时候，说实话多次尝试将一些 Rust 特性在 C# 中实现（），不过确实有点麻烦，特别是我想要实现类似过程宏的东西时候遇到了很大的阻碍（一大理由就是 C# 不允许用户自己分析 TokenStream，使得不可能像 Rust 那样自由），我尝试的一个思路是使用字符串，然后我就自己设计语法（参考 Rust），搓了词法分析，语法分析。不过话说回来，这样就不像是 C#，固然人家 Lisp，Rust 可以设计自己的语法，但是他们都还是 Lisp，Rust，而 C# 既然本身设计哲学就是这样，强行改变写法只会显得抽象和丑陋。</p>
+<p>当然 Rust 和 C# 都是极其优秀的语言，写工程确实舒服。<del>（叠个甲）</del></p>
+<p>不知道看本篇文章的读者有没有玩过所学语言的元编程机制，如果本文给你打开了一扇新世界的大门<del>（大概不是深渊吧）</del>，将是我的荣幸。</p>
+
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>hacbit
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="http://hacbit.tech/%E6%B5%85%E8%B0%88CSharp%E4%B8%8ERust%E7%9A%84%E5%85%83%E7%BC%96%E7%A8%8B%E6%9C%BA%E5%88%B6/" title="浅谈CSharp与Rust的元编程机制">http://hacbit.tech/浅谈CSharp与Rust的元编程机制/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Rust/" rel="tag"><i class="fa fa-tag"></i> Rust</a>
+              <a href="/tags/CSharp/" rel="tag"><i class="fa fa-tag"></i> CSharp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/" rel="prev" title="在Unity中解放高版本C#特性">
+      <i class="fa fa-chevron-left"></i> 在Unity中解放高版本C#特性
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E7%BC%96%E7%A8%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">元编程概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%AE%80%E5%8D%95%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">一些简单实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E5%A2%9E%E9%87%8F%E7%94%9F%E6%88%90%E5%99%A8%EF%BC%88IncrementalGenerator%EF%BC%89%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.1.</span> <span class="nav-text">C# 增量生成器（IncrementalGenerator）实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E8%AF%8A%E6%96%AD%E5%88%86%E6%9E%90%E5%99%A8%EF%BC%88DiagnosticAnalyzer%EF%BC%89%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.2.</span> <span class="nav-text">C# 诊断分析器（DiagnosticAnalyzer）实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rust-%E5%87%BD%E6%95%B0%E5%AE%8F%EF%BC%88%E5%A3%B0%E6%98%8E%E5%AE%8F%EF%BC%89%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.3.</span> <span class="nav-text">Rust 函数宏（声明宏）实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rust-%E8%BF%87%E7%A8%8B%E5%AE%8F%EF%BC%88proc-macro%EF%BC%89%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.4.</span> <span class="nav-text">Rust 过程宏（proc-macro）实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%92%8CRust%E5%9C%A8%E5%85%83%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E4%B8%8A%E7%9A%84%E5%BC%82%E5%90%8C"><span class="nav-number">3.</span> <span class="nav-text">C#和Rust在元编程实现上的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">4.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%90%8E%E9%9D%A2"><span class="nav-number">5.</span> <span class="nav-text">写在后面</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hacbit"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">hacbit</p>
+  <div class="site-description" itemprop="description">The world open itself before those with noble heart.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hacbit" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hacbit" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hacbit@foxmail.com" title="E-Mail → mailto:hacbit@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<div style="">
+  <canvas id="canvas" style="width:60%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Tue Jun 20 2023 08:00:00 GMT+0800 (中国标准时间) – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hacbit</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">44k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">1:21</span>
+</div>
+  <div class="powered-by">
+    <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
+  </div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">The blog has a total of 40.1k words</span>
+</div>
+
+
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <span id="busuanzi_container_site_pv">total visits<span id="busuanzi_value_site_pv"></span> times</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">total visitors<span id="busuanzi_value_site_uv"></span> people</span>
+  <span class="post-meta-divider">|</span>
+
+<!-- 初始值纠正 -->
+<script>
+  $(document).ready(function() {
+    var int = setInterval(fixCount, 50); // 每50毫秒执行一次fixCount函数
+    var countOffset = 20000; // 初始值偏移量
+    var fixCount = function() {
+      if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+      if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        } 
+    }
+  });
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='123,174,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'neutral',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+
+
+    <script type="text/javascript" src="/js/firework.js"></script>
+
+
+
+  <script type="text/javascript" src="/js/click_show_text.js"></script>
+
+
+
+
+</body>
+</html>
