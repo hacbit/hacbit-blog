@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+
+<script>
+  (function() {
+    if ('') {
+      var password = window.prompt('INPUT PASSWORD');
+      if (password !== '') {
+        alert('WRONG PASSWORD');
+        history.back();
+      }
+    }
+  })();
+</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="近期在研究 C# 的表达式树，感觉部分场景下使用表达式树会很有优势，不知道表达式树是什么直接看官方文档吧 下面是我遇到的几种觉得可以使用表达式树的场景（具体情况具体分析，建议辩证的看待）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用CSharp表达式树优化代码">
+<meta property="og:url" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="hacbit&#39;s blog">
+<meta property="og:description" content="近期在研究 C# 的表达式树，感觉部分场景下使用表达式树会很有优势，不知道表达式树是什么直接看官方文档吧 下面是我遇到的几种觉得可以使用表达式树的场景（具体情况具体分析，建议辩证的看待）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
+<meta property="og:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526014002834.png">
+<meta property="article:published_time" content="2025-05-25T03:52:18.000Z">
+<meta property="article:modified_time" content="2025-05-25T17:41:05.972Z">
+<meta property="article:author" content="hacbit">
+<meta property="article:tag" content="CSharp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
+
+<link rel="canonical" href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>使用CSharp表达式树优化代码 | hacbit's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  
+<link rel="alternate" href="/rss2.xml" title="hacbit's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+      <a target="_blank" rel="noopener" href="https://github.com/hacbit" class="github-corner" aria-label="View source on GitHub"></a>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hacbit's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-friends-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>friends links</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hacbit" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="hacbit">
+      <meta itemprop="description" content="The world open itself before those with noble heart.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hacbit's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用CSharp表达式树优化代码
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-05-25 11:52:18" itemprop="dateCreated datePublished" datetime="2025-05-25T11:52:18+08:00">2025-05-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-26 01:41:05" itemprop="dateModified" datetime="2025-05-26T01:41:05+08:00">2025-05-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>近期在研究 C# 的表达式树，感觉部分场景下使用表达式树会很有优势，不知道表达式树是什么直接看<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/csharp/advanced-topics/expression-trees/expression-trees-explained">官方文档</a>吧</p>
+<p>下面是我遇到的几种觉得可以使用表达式树的场景（具体情况具体分析，建议辩证的看待）</p>
+<span id="more"></span>
+
+<h2 id="使用-Expression-代替嵌套-Lambda"><a href="#使用-Expression-代替嵌套-Lambda" class="headerlink" title="使用 Expression 代替嵌套 Lambda"></a>使用 Expression 代替嵌套 Lambda</h2><p>假设一种场景，我们需要构建一个节点树（简单点就只用一个单链了），然后根据节点上的一些信息构建成一个 lambda，比如这样：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">Foo</span>(<span class="params"><span class="built_in">int</span> x</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> Operation</span><br><span class="line">&#123;</span><br><span class="line">    Add,</span><br><span class="line">    Sub,</span><br><span class="line">    Mul,</span><br><span class="line">    Div,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Node</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> required Operation Op &#123; <span class="keyword">get</span>; <span class="keyword">init</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> required <span class="built_in">int</span> Value &#123; <span class="keyword">get</span>; <span class="keyword">init</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Node? Next = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Foo <span class="title">BuildLambda</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Foo proc = Op <span class="keyword">switch</span></span><br><span class="line">        &#123;</span><br><span class="line">            Operation.Add =&gt; x =&gt; x + Value,</span><br><span class="line">            Operation.Sub =&gt; x =&gt; x - Value,</span><br><span class="line">            Operation.Mul =&gt; x =&gt; x * Value,</span><br><span class="line">            Operation.Div =&gt; x =&gt; x / Value,</span><br><span class="line">            _ =&gt; x =&gt; x,</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> x =&gt; proc((Next?.BuildLambda() ?? (x =&gt; x))(x));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很容易发现问题，如果树比较复杂，会导致 lambda 套了很多层，自然就导致运行效率不高</p>
+<p>编写一段测试代码</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">const</span> <span class="built_in">int</span> N = <span class="number">1000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Test <span class="subst">&#123;N&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> node = Generate();</span><br><span class="line">    <span class="keyword">var</span> sw = <span class="keyword">new</span> Stopwatch();</span><br><span class="line">    sw.Start();</span><br><span class="line">    <span class="keyword">var</span> f = node.BuildLambda();</span><br><span class="line">    sw.Stop();</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Lambda Build used <span class="subst">&#123;sw.ElapsedMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">    sw.Restart();</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        f(i);</span><br><span class="line">    &#125;</span><br><span class="line">    sw.Stop();</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Lambda Run used <span class="subst">&#123;sw.ElapsedMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">Generate</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> root = <span class="keyword">new</span> Node &#123; Op = Operation.Add, Value = <span class="number">114514</span> &#125;;</span><br><span class="line">    <span class="keyword">var</span> node = root;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> op = (Operation)Random.Shared.Next(<span class="number">4</span>);</span><br><span class="line">        <span class="keyword">var</span> val = Random.Shared.Next(<span class="number">1919810</span>);</span><br><span class="line">        node!.Next = <span class="keyword">new</span> Node &#123; Op = op, Value = val &#125;;</span><br><span class="line">        node = root.Next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单生成了一个套了大概10层的节点，然后构建成 lambda 去跑数据，测试了几个 N 得到了如下数据</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Test <span class="number">1000</span></span><br><span class="line">Lambda Build used <span class="number">0</span> ms</span><br><span class="line">Lambda Run used <span class="number">0</span> ms</span><br><span class="line"></span><br><span class="line">Test <span class="number">10000</span></span><br><span class="line">Lambda Build used <span class="number">0</span> ms</span><br><span class="line">Lambda Run used <span class="number">21</span> ms</span><br><span class="line"></span><br><span class="line">Test <span class="number">100000</span></span><br><span class="line">Lambda Build used <span class="number">0</span> ms</span><br><span class="line">Lambda Run used <span class="number">36</span> ms</span><br><span class="line"></span><br><span class="line">Test <span class="number">1000000</span></span><br><span class="line">Lambda Build used <span class="number">0</span> ms</span><br><span class="line">Lambda Run used <span class="number">102</span> ms</span><br></pre></td></tr></table></figure>
+
+<p>接下来可以考虑一下表达式树会有什么优势，很显然，我们可以操作节点树，自下而上合并成一个函数</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Expression&lt;Foo&gt; <span class="title">BuildExpression</span>(<span class="params">ParameterExpression param</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="keyword">value</span> = Expression.Constant(Value);</span><br><span class="line">    Expression next = Next?.BuildExpression(param).Body ?? param;</span><br><span class="line">    Expression proc = Op <span class="keyword">switch</span></span><br><span class="line">    &#123;</span><br><span class="line">        Operation.Add =&gt; Expression.Add(next, <span class="keyword">value</span>),</span><br><span class="line">        Operation.Sub =&gt; Expression.Subtract(next, <span class="keyword">value</span>),</span><br><span class="line">        Operation.Mul =&gt; Expression.Multiply(next, <span class="keyword">value</span>),</span><br><span class="line">        Operation.Div =&gt; Expression.Divide(next, <span class="keyword">value</span>),</span><br><span class="line">        _ =&gt; next,</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> Expression.Lambda&lt;Foo&gt;(proc, param);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过每次获取子表达式，然后把函数体拼接，其实就是把一个树状结构平坦化了</p>
+<blockquote>
+<p>  这里要注意，参数通过函数来传递而不是每次build都在里面定义一个变量是因为即便设置的变量名一样，但是本质也是绑定的不同的参数，这时候就不能直接使用 Body 拼接，否则会运行时异常</p>
+</blockquote>
+<p>做一下基准测试</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Benchmark</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> Node node;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> N = <span class="number">10000</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">GlobalSetup</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Setup</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        node = Program.Generate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Benchmark</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestExpression</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> param = Expression.Parameter(<span class="keyword">typeof</span>(<span class="built_in">int</span>), <span class="string">&quot;x&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> expr = node.BuildExpression(param);</span><br><span class="line">        <span class="keyword">var</span> f2 = expr.Compile();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            f2(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Benchmark</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestLambda</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> f = node.BuildLambda();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            f(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> summary = BenchmarkRunner.Run&lt;Benchmark&gt;();</span><br><span class="line">        Console.WriteLine(summary);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// other code</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png" alt="benchmark"></p>
+<p>基本上这个表达式树需要大概 15-30 ms 的时间编译，而运行的性能非常高，这个优势会在数据数量级越高，树结构越复杂的时候由很显著的表现</p>
+<p>不过 expression 缺点是写起来很麻烦，也不直观，而且容易写出 bug，特别是类型对应不上的情况，往往要到运行时报错了才能发现</p>
+<p>一般的情况用嵌套函数已经够了</p>
+<h2 id="反射-Expression-代替纯反射"><a href="#反射-Expression-代替纯反射" class="headerlink" title="反射 + Expression 代替纯反射"></a>反射 + Expression 代替纯反射</h2><p>比如通过反射获取一个 MethodInfo，调用它的方式亦有差别。通常可能会直接 <code>.Invoke(...)</code> 调用了，但是这种动态调用机制会在运行时对传入进行参数类型检查，装拆箱等操作，以及方法的动态派发，同时也没有 JIT 的优化，这导致就算是缓存了这个 info，多次调用也不能有很高的性能。</p>
+<p>这时候可以通过表达式树来提供更好的性能</p>
+<p>比如我们要获取一个类型的 property 的 setter 来进行赋值操作</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Benchmark2</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> Bar bar;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> N = <span class="number">10000</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">GlobalSetup</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Setup</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        bar = <span class="keyword">new</span> Bar(<span class="number">114514</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MethodInfo? setter;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Benchmark</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestReflection</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        setter ??= <span class="keyword">typeof</span>(Bar).GetProperty(<span class="string">&quot;value&quot;</span>, BindingFlags.NonPublic | BindingFlags.Instance)?</span><br><span class="line">            .GetSetMethod(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            setter?.Invoke(bar, <span class="keyword">new</span> <span class="built_in">object</span>[] &#123; i &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是很自然的操作，如果需要多次调用，把这个 methodInfo 缓存下来，之后直接 invoke 这个 methodinfo</p>
+<p>然后我们使用同样的逻辑来使用表达式树，这里使用 <code>Expression.Call</code> 来调用一个 MethodInfo</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Action&lt;Bar, <span class="built_in">int</span>&gt;? setter2;</span><br><span class="line"></span><br><span class="line">[<span class="meta">Benchmark</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestExpression</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (setter2 <span class="keyword">is</span> <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> barParam = Expression.Parameter(<span class="keyword">typeof</span>(Bar), <span class="string">&quot;bar&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> valueParam = Expression.Parameter(<span class="keyword">typeof</span>(<span class="built_in">int</span>), <span class="string">&quot;value&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> setterMethod = <span class="keyword">typeof</span>(Bar).GetProperty(<span class="string">&quot;value&quot;</span>, BindingFlags.NonPublic | BindingFlags.Instance)?</span><br><span class="line">            .GetSetMethod(<span class="literal">true</span>);</span><br><span class="line">        setter2 = Expression.Lambda&lt;Action&lt;Bar, <span class="built_in">int</span>&gt;&gt;(</span><br><span class="line">            Expression.Call(barParam, setterMethod!, valueParam),</span><br><span class="line">            barParam, valueParam</span><br><span class="line">        ).Compile();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        setter2(bar, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这次我们不需要缓存这个 methodInfo，而是编译成一个委托然后缓存该委托</p>
+<p>同样跑一下基准测试</p>
+<p><img src="/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526014002834.png" alt="benchmark2"></p>
+<blockquote>
+<p>  表达式树编译后的委托是直接去调用目标方法的 IL 代码，性能几乎是接近直接调用的，避免动态调用开销，所以性能会远高于 MethodInfo.Invoke</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>hacbit
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/" title="使用CSharp表达式树优化代码">http://hacbit.tech/使用CSharp表达式树优化代码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/CSharp/" rel="tag"><i class="fa fa-tag"></i> CSharp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%9F%BA%E4%BA%8EValueDropdown%E6%8B%93%E5%B1%95%E4%BB%A5%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89icon/" rel="prev" title="基于ValueDropdown拓展以支持自定义icon">
+      <i class="fa fa-chevron-left"></i> 基于ValueDropdown拓展以支持自定义icon
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Expression-%E4%BB%A3%E6%9B%BF%E5%B5%8C%E5%A5%97-Lambda"><span class="nav-number">1.</span> <span class="nav-text">使用 Expression 代替嵌套 Lambda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84-Expression-%E4%BB%A3%E6%9B%BF%E7%BA%AF%E5%8F%8D%E5%B0%84"><span class="nav-number">2.</span> <span class="nav-text">反射 + Expression 代替纯反射</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hacbit"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">hacbit</p>
+  <div class="site-description" itemprop="description">The world open itself before those with noble heart.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hacbit" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hacbit" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hacbit@foxmail.com" title="E-Mail → mailto:hacbit@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<div style="">
+  <canvas id="canvas" style="width:60%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Tue Jun 20 2023 08:00:00 GMT+0800 (中国标准时间) – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hacbit</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">48k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">1:27</span>
+</div>
+  <div class="powered-by">
+    <!--Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> -->
+  </div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">The blog has a total of 43.6k words</span>
+</div>
+
+
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <span id="busuanzi_container_site_pv">total visits<span id="busuanzi_value_site_pv"></span> times</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">total visitors<span id="busuanzi_value_site_uv"></span> people</span>
+  <span class="post-meta-divider">|</span>
+
+<!-- 初始值纠正 -->
+<script>
+  $(document).ready(function() {
+    var int = setInterval(fixCount, 50); // 每50毫秒执行一次fixCount函数
+    var countOffset = 20000; // 初始值偏移量
+    var fixCount = function() {
+      if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+      if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        } 
+    }
+  });
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='123,174,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'neutral',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+
+
+    <script type="text/javascript" src="/js/firework.js"></script>
+
+
+
+  <script type="text/javascript" src="/js/click_show_text.js"></script>
+
+
+
+
+</body>
+</html>
