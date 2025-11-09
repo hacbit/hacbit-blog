@@ -31,19 +31,19 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"blog.hacbit.net","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="之前我在知乎问过相关问题，后面参考了几个知友的回答，借鉴了一些项目，也算是基本解决了这个问题 也顺便附上我的知乎回答：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;11672499668&#x2F;answer&#x2F;103930816515 以下是关于如何在 Unity 中使用更高版本的 C# 特性的详细解决办法（具有一定局限性）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在Unity中解放高版本C#特性">
-<meta property="og:url" content="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:url" content="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
 <meta property="og:description" content="之前我在知乎问过相关问题，后面参考了几个知友的回答，借鉴了一些项目，也算是基本解决了这个问题 也顺便附上我的知乎回答：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;11672499668&#x2F;answer&#x2F;103930816515 以下是关于如何在 Unity 中使用更高版本的 C# 特性的详细解决办法（具有一定局限性）">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/dotnet_sdk.png">
-<meta property="og:image" content="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/sdk_search.png">
-<meta property="og:image" content="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/compiler.png">
+<meta property="og:image" content="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/dotnet_sdk.png">
+<meta property="og:image" content="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/sdk_search.png">
+<meta property="og:image" content="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/compiler.png">
 <meta property="article:published_time" content="2025-02-24T14:10:35.000Z">
 <meta property="article:modified_time" content="2025-02-24T15:36:28.717Z">
 <meta property="article:author" content="hacbit">
@@ -51,9 +51,9 @@
 <meta property="article:tag" content="Tutorial">
 <meta property="article:tag" content="CSharp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/dotnet_sdk.png">
+<meta name="twitter:image" content="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/dotnet_sdk.png">
 
-<link rel="canonical" href="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/">
+<link rel="canonical" href="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/">
 
 
 <script id="page-configurations">
@@ -221,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/">
+    <link itemprop="mainEntityOfPage" href="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -354,7 +354,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://hacbit.tech/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/" title="在Unity中解放高版本C#特性">http://hacbit.tech/在Unity中解放高版本CS特性/</a>
+    <a href="https://blog.hacbit.net/%E5%9C%A8Unity%E4%B8%AD%E8%A7%A3%E6%94%BE%E9%AB%98%E7%89%88%E6%9C%ACCS%E7%89%B9%E6%80%A7/" title="在Unity中解放高版本C#特性">https://blog.hacbit.net/在Unity中解放高版本CS特性/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

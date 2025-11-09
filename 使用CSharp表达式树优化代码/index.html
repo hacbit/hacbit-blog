@@ -31,26 +31,26 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hacbit.tech","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"blog.hacbit.net","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="近期在研究 C# 的表达式树，感觉部分场景下使用表达式树会很有优势，不知道表达式树是什么直接看官方文档吧 下面是我遇到的几种觉得可以使用表达式树的场景（具体情况具体分析，建议辩证的看待）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用CSharp表达式树优化代码">
-<meta property="og:url" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:url" content="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="hacbit&#39;s blog">
 <meta property="og:description" content="近期在研究 C# 的表达式树，感觉部分场景下使用表达式树会很有优势，不知道表达式树是什么直接看官方文档吧 下面是我遇到的几种觉得可以使用表达式树的场景（具体情况具体分析，建议辩证的看待）">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
-<meta property="og:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526014002834.png">
+<meta property="og:image" content="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
+<meta property="og:image" content="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526014002834.png">
 <meta property="article:published_time" content="2025-05-25T03:52:18.000Z">
 <meta property="article:modified_time" content="2025-05-25T17:41:05.972Z">
 <meta property="article:author" content="hacbit">
 <meta property="article:tag" content="CSharp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
+<meta name="twitter:image" content="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/image-20250526011451685.png">
 
-<link rel="canonical" href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
+<link rel="canonical" href="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
 
 
 <script id="page-configurations">
@@ -218,7 +218,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
+    <link itemprop="mainEntityOfPage" href="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -355,7 +355,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="http://hacbit.tech/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/" title="使用CSharp表达式树优化代码">http://hacbit.tech/使用CSharp表达式树优化代码/</a>
+    <a href="https://blog.hacbit.net/%E4%BD%BF%E7%94%A8CSharp%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A0%91%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81/" title="使用CSharp表达式树优化代码">https://blog.hacbit.net/使用CSharp表达式树优化代码/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
